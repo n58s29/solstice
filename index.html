@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLSTICE — Bibliothèque d'Assistants · Fabrique de l'Adoption Numérique</title>
+  <style>
+    :root {
+      --primaire: #001b44;
+      --primaire-conteneur: #123062;
+      --sur-primaire: #ffffff;
+      --sur-primaire-conteneur: #d1e0f0;
+      --surface: #f7f9ff;
+      --surface-basse: #f1f4fa;
+      --surface-haute: #dfe3e8;
+      --surface-flottante: #ffffff;
+      --sur-surface: #181c20;
+      --sur-surface-secondaire: #44474e;
+      --cerulean: #0088cc;
+      --ambre: #eed484;
+      --menthe: #00b388;
+      --lavande: #8374d1;
+      --ocre: #dc582a;
+      --bourgogne: #651c32;
+      --bleu-horizon: #a4c8e1;
+      --succes-fond: #d3e9e5;
+      --ombre-ambiante: rgba(0, 26, 66, 0.06);
+      --bordure-fantome: rgba(116, 119, 128, 0.15);
+      --police-display: 'Avenir', 'Avenir Next', sans-serif;
+      --police-corps: 'Avenir', 'Avenir Next', Arial, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--police-corps);
+      background: var(--surface);
+      color: var(--sur-surface);
+      font-weight: 300;
+      line-height: 1.65;
+    }
+    h1, h2 { font-family: var(--police-display); font-weight: 500; letter-spacing: -0.02em; color: var(--primaire); }
+    h3 { font-family: var(--police-corps); font-weight: 400; }
+
+    /* === LAYOUT 1/3 + 2/3 === */
+    .layout-app {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      min-height: 100vh;
+    }
+
+    /* === SIDEBAR === */
+    .sidebar {
+      background: var(--surface-basse);
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-brand {
+      margin-bottom: 2.5rem;
+    }
+    .eyebrow {
+      font-family: var(--police-corps);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cerulean);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .point-vivant {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cerulean);
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .sidebar-title {
+      font-family: var(--police-display);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--primaire);
+      line-height: 1.15;
+      margin-top: 0.75rem;
+    }
+    .sidebar-subtitle {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--sur-surface-secondaire);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    /* Sidebar search */
+    .sidebar-search {
+      margin-bottom: 2rem;
+    }
+    .champ {
+      background: var(--surface-haute);
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0.25rem 0.25rem 0 0;
+      padding: 0.75rem 1rem;
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--sur-surface);
+      transition: background 0.2s, border-color 0.2s;
+      width: 100%;
+    }
+    .champ:focus {
+      background: var(--surface-flottante);
+      border-bottom-color: var(--primaire);
+      outline: none;
+    }
+    .champ::placeholder {
+      color: var(--sur-surface-secondaire);
+      font-weight: 300;
+    }
+
+    /* Sidebar filters */
+    .sidebar-section-label {
+      font-family: var(--police-corps);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sur-surface-secondaire);
+      margin-bottom: 0.75rem;
+    }
+    .filter-group {
+      margin-bottom: 1.75rem;
+    }
+    .filter-chip {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      font-family: var(--police-corps);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--sur-surface-secondaire);
+      background: var(--surface);
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin: 0 0.35rem 0.4rem 0;
+      user-select: none;
+    }
+    .filter-chip:hover {
+      background: var(--surface-haute);
+      color: var(--sur-surface);
+    }
+    .filter-chip.active {
+      background: var(--primaire);
+      color: var(--sur-primaire);
+    }
+    .filter-chip.active[data-color="cerulean"] { background: var(--cerulean); }
+    .filter-chip.active[data-color="menthe"] { background: var(--menthe); }
+    .filter-chip.active[data-color="lavande"] { background: var(--lavande); }
+    .filter-chip.active[data-color="ambre"] { background: #c4a94d; color: var(--primaire); }
+    .filter-chip.active[data-color="ocre"] { background: var(--ocre); }
+    .filter-chip.active[data-color="bourgogne"] { background: var(--bourgogne); }
+
+    /* Sidebar stats */
+    .sidebar-stats {
+      margin-top: auto;
+      padding-top: 1.5rem;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+    }
+    .stat-label {
+      font-size: 0.8125rem;
+      font-weight: 300;
+      color: var(--sur-surface-secondaire);
+    }
+    .stat-value {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--primaire);
+    }
+
+    /* === MAIN CONTENT === */
+    .contenu-principal {
+      padding: 2.5rem;
+      background: var(--surface);
+      min-height: 100vh;
+    }
+
+    /* Header bar */
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+    }
+    .content-header h2 {
+      font-size: clamp(1.3rem, 2vw, 1.8rem);
+      line-height: 1.2;
+    }
+    .content-header-count {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--sur-surface-secondaire);
+    }
+    .view-toggle {
+      display: flex;
+      gap: 0;
+    }
+    .view-btn {
+      background: var(--surface-basse);
+      border: none;
+      padding: 0.5rem 0.85rem;
+      cursor: pointer;
+      color: var(--sur-surface-secondaire);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      transition: background 0.2s, color 0.2s;
+    }
+    .view-btn:first-child { border-radius: 0.25rem 0 0 0.25rem; }
+    .view-btn:last-child { border-radius: 0 0.25rem 0.25rem 0; }
+    .view-btn.active {
+      background: var(--primaire);
+      color: var(--sur-primaire);
+    }
+
+    /* === CARDS GRID === */
+    .grille-assistants {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* === ASSISTANT CARD === */
+    .carte-assistant {
+      background: var(--surface-flottante);
+      border-radius: 0.25rem;
+      padding: 0;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .carte-assistant:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px var(--ombre-ambiante);
+    }
+    .carte-top-accent {
+      height: 3px;
+      width: 100%;
+    }
+    .carte-top-accent.cerulean { background: var(--cerulean); }
+    .carte-top-accent.menthe { background: var(--menthe); }
+    .carte-top-accent.lavande { background: var(--lavande); }
+    .carte-top-accent.ambre { background: var(--ambre); }
+    .carte-top-accent.ocre { background: var(--ocre); }
+    .carte-top-accent.bourgogne { background: var(--bourgogne); }
+
+    .carte-body {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .carte-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .carte-icone {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .carte-icone.cerulean { background: rgba(0, 136, 204, 0.12); }
+    .carte-icone.menthe { background: rgba(0, 179, 136, 0.12); }
+    .carte-icone.lavande { background: rgba(131, 116, 209, 0.12); }
+    .carte-icone.ambre { background: rgba(238, 212, 132, 0.15); }
+    .carte-icone.ocre { background: rgba(220, 88, 42, 0.12); }
+    .carte-icone.bourgogne { background: rgba(101, 28, 50, 0.12); }
+
+    .carte-titre-zone {
+      flex: 1;
+      min-width: 0;
+    }
+    .carte-nom {
+      font-family: var(--police-display);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--primaire);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+    .carte-auteur {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--sur-surface-secondaire);
+      margin-top: 0.15rem;
+      letter-spacing: 0.02em;
+    }
+    .carte-description {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--sur-surface-secondaire);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .carte-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      background-image: linear-gradient(to right, var(--surface-haute) 40%, transparent 0%);
+      background-size: 5px 1px;
+      background-repeat: repeat-x;
+      background-position: top;
+    }
+    .carte-tags {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-family: var(--police-corps);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 2rem;
+      background: var(--surface-basse);
+      color: var(--sur-surface-secondaire);
+    }
+    .carte-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .meta-item {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--sur-surface-secondaire);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .meta-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--sur-surface-secondaire);
+      opacity: 0.4;
+    }
+
+    /* === FEATURED CARD (first/hero) === */
+    .carte-featured {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: linear-gradient(135deg, var(--primaire) 0%, var(--primaire-conteneur) 100%);
+      border-radius: 0.25rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .carte-featured:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(0, 27, 68, 0.2);
+    }
+    .featured-content {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .featured-eyebrow {
+      font-family: var(--police-corps);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ambre);
+      margin-bottom: 1rem;
+    }
+    .featured-nom {
+      font-family: var(--police-display);
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 500;
+      color: var(--sur-primaire);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .featured-description {
+      font-size: 0.9375rem;
+      font-weight: 300;
+      color: var(--sur-primaire-conteneur);
+      line-height: 1.6;
+      margin-top: 1rem;
+      max-width: 420px;
+    }
+    .featured-action {
+      margin-top: 1.5rem;
+    }
+    .btn-primaire {
+      background: var(--sur-primaire);
+      color: var(--primaire);
+      border: none;
+      border-radius: 0.375rem;
+      padding: 0.625rem 1.5rem;
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primaire:hover {
+      background: var(--surface-basse);
+    }
+    .btn-primaire:active {
+      transform: scale(0.98);
+    }
+    .featured-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem;
+      position: relative;
+    }
+    .featured-illustration {
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .sun-icon {
+      width: 120px;
+      height: 120px;
+    }
+    .orbit {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .orbit-1 { width: 180px; height: 180px; animation: spin 20s linear infinite; }
+    .orbit-2 { width: 240px; height: 240px; animation: spin 30s linear infinite reverse; }
+    .orbit-dot {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      top: -4px; left: 50%; transform: translateX(-50%);
+    }
+    .orbit-dot.c1 { background: var(--cerulean); }
+    .orbit-dot.c2 { background: var(--ambre); }
+    .orbit-dot.c3 { background: var(--menthe); }
+    .orbit-dot.c4 { background: var(--lavande); }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* === EMPTY / NEW CARD === */
+    .carte-nouvelle {
+      background: var(--surface-basse);
+      border-radius: 0.25rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      cursor: pointer;
+      transition: background 0.2s;
+      outline: 1px dashed var(--bordure-fantome);
+    }
+    .carte-nouvelle:hover {
+      background: var(--surface-haute);
+    }
+    .carte-nouvelle-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cerulean);
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 0.75rem;
+    }
+    .carte-nouvelle-text {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--sur-surface-secondaire);
+    }
+
+    /* === FOOTER === */
+    footer {
+      background: var(--surface-basse);
+      padding: 2rem 2.5rem;
+      text-align: center;
+    }
+    .footer-titre {
+      font-family: var(--police-display);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--primaire);
+    }
+    .footer-sous-titre {
+      font-family: var(--police-corps);
+      font-size: 0.8125rem;
+      font-weight: 300;
+      color: var(--sur-surface-secondaire);
+      margin-top: 0.5rem;
+    }
+    .footer-filet {
+      width: 200px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cerulean), var(--ambre), var(--menthe));
+      margin: 1rem auto 0;
+      border-radius: 1px;
+    }
+
+    /* === APPARITION === */
+    .apparition {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+    .apparition.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 900px) {
+      .layout-app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        min-height: auto;
+      }
+      .contenu-principal { padding: 1.5rem 1.25rem; }
+      .carte-featured {
+        grid-template-columns: 1fr;
+      }
+      .featured-visual { display: none; }
+      .grille-assistants {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout-app">
+
+  <!-- ======== SIDEBAR ======== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="eyebrow">
+        <span class="point-vivant"></span>
+        SOLSTICE — Bibliothèque d'Assistants
+      </span>
+      <h1 class="sidebar-title">Solstice</h1>
+      <p class="sidebar-subtitle">Tous les assistants Groupe SNCF GPT de l'équipe, réunis au même endroit.</p>
+    </div>
+
+    <div class="sidebar-search">
+      <input type="text" class="champ" placeholder="Rechercher un assistant…" id="searchInput">
+    </div>
+
+    <div class="filter-group">
+      <div class="sidebar-section-label">Catégorie</div>
+      <span class="filter-chip active" data-filter="all">Tous</span>
+      <span class="filter-chip" data-filter="atelier" data-color="ambre">Ateliers</span>
+      <span class="filter-chip" data-filter="cadrage" data-color="cerulean">Cadrage</span>
+      <span class="filter-chip" data-filter="redaction" data-color="menthe">Rédaction</span>
+      <span class="filter-chip" data-filter="dev" data-color="lavande">Dev &amp; Tech</span>
+      <span class="filter-chip" data-filter="analyse" data-color="ocre">Analyse</span>
+      <span class="filter-chip" data-filter="formation" data-color="bourgogne">Formation</span>
+    </div>
+
+    <div class="filter-group">
+      <div class="sidebar-section-label">Plateforme</div>
+      <span class="filter-chip active" data-filter-platform="all">Toutes</span>
+      <span class="filter-chip" data-filter-platform="gpt">GPT</span>
+      <span class="filter-chip" data-filter-platform="claude">Claude</span>
+      <span class="filter-chip" data-filter-platform="mistral">Mistral</span>
+    </div>
+
+    <div class="sidebar-stats">
+      <div class="stat-row">
+        <span class="stat-label">Assistants publiés</span>
+        <span class="stat-value">12</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Contributeurs</span>
+        <span class="stat-value">6</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Dernière mise à jour</span>
+        <span class="stat-value">15 avr. 2026</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======== MAIN ======== -->
+  <main>
+    <div class="contenu-principal">
+
+      <div class="content-header">
+        <div>
+          <h2>Assistants disponibles</h2>
+          <span class="content-header-count">12 assistants · 6 catégories</span>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" title="Grille">◫</button>
+          <button class="view-btn" title="Liste">☰</button>
+        </div>
+      </div>
+
+      <div class="grille-assistants">
+
+        <!-- FEATURED: SUNSHINE -->
+        <div class="carte-featured apparition" data-category="atelier" data-platform="gpt">
+          <div class="featured-content">
+            <div class="featured-eyebrow">Assistant vedette</div>
+            <div class="featured-nom">Sunshine</div>
+            <p class="featured-description">Prépare vos ateliers IAGEN de A à Z : structure le déroulé, génère les supports, propose les exercices et produit le compte-rendu.</p>
+            <div class="featured-action">
+              <button class="btn-primaire">Ouvrir l'assistant</button>
+            </div>
+          </div>
+          <div class="featured-visual">
+            <div class="featured-illustration">
+              <svg class="sun-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="28" fill="#eed484" opacity="0.9"/>
+                <circle cx="60" cy="60" r="22" fill="#eed484"/>
+                <g opacity="0.3">
+                  <line x1="60" y1="8" x2="60" y2="24" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="60" y1="96" x2="60" y2="112" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="8" y1="60" x2="24" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="96" y1="60" x2="112" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="23.2" y1="23.2" x2="34.5" y2="34.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="85.5" y1="85.5" x2="96.8" y2="96.8" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="23.2" y1="96.8" x2="34.5" y2="85.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="85.5" y1="34.5" x2="96.8" y2="23.2" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+                </g>
+              </svg>
+              <div class="orbit orbit-1">
+                <span class="orbit-dot c1"></span>
+              </div>
+              <div class="orbit orbit-2">
+                <span class="orbit-dot c2" style="top:auto;bottom:-4px;"></span>
+                <span class="orbit-dot c3" style="top:50%;left:-4px;transform:translateY(-50%);"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Cadrage Express → renommé AURORE -->
+        <div class="carte-assistant apparition" data-category="cadrage" data-platform="gpt">
+          <div class="carte-top-accent cerulean"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone cerulean">⚡</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Aurore</div>
+                <div class="carte-auteur">ex Cadrage Express · par Fabien</div>
+              </div>
+            </div>
+            <p class="carte-description">Cadrage rapide de projet IA en 15 minutes. Pose les bonnes questions, structure la fiche projet et identifie les risques clés.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Cadrage</span>
+                <span class="tag">GPT-4o</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">127 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Éclipse -->
+        <div class="carte-assistant apparition" data-category="redaction" data-platform="gpt">
+          <div class="carte-top-accent menthe"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone menthe">✏</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Éclipse</div>
+                <div class="carte-auteur">par Marie</div>
+              </div>
+            </div>
+            <p class="carte-description">Rédaction et reformulation de contenus métier : notes de synthèse, mails exécutifs, communications internes.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Rédaction</span>
+                <span class="tag">Claude</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">89 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Zénith -->
+        <div class="carte-assistant apparition" data-category="analyse" data-platform="claude">
+          <div class="carte-top-accent ocre"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone ocre">📊</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Zénith</div>
+                <div class="carte-auteur">par Thomas</div>
+              </div>
+            </div>
+            <p class="carte-description">Analyse de données et génération de tableaux de bord. Connectez un CSV et obtenez une synthèse visuelle en 30 secondes.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Analyse</span>
+                <span class="tag">Claude</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">64 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Équinoxe -->
+        <div class="carte-assistant apparition" data-category="dev" data-platform="mistral">
+          <div class="carte-top-accent lavande"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone lavande">⟨/⟩</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Équinoxe</div>
+                <div class="carte-auteur">par Julien</div>
+              </div>
+            </div>
+            <p class="carte-description">Revue de code, refactoring et génération de tests. Spécialisé Python et TypeScript avec les conventions SNCF.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Dev</span>
+                <span class="tag">Mistral</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">201 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Halo -->
+        <div class="carte-assistant apparition" data-category="formation" data-platform="gpt">
+          <div class="carte-top-accent bourgogne"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone bourgogne">🎓</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Halo</div>
+                <div class="carte-auteur">par Sophie</div>
+              </div>
+            </div>
+            <p class="carte-description">Création de parcours de formation IA sur mesure. Génère les modules, les quiz et les fiches récapitulatives.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Formation</span>
+                <span class="tag">GPT-4o</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">52 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Lumière -->
+        <div class="carte-assistant apparition" data-category="cadrage" data-platform="claude">
+          <div class="carte-top-accent cerulean"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone cerulean">🧭</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Lumière</div>
+                <div class="carte-auteur">par Anne</div>
+              </div>
+            </div>
+            <p class="carte-description">Cartographie des cas d'usage IA d'une direction. Identifie les quick wins, estime le ROI et propose une feuille de route.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Cadrage</span>
+                <span class="tag">Claude</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">38 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD: Rayon -->
+        <div class="carte-assistant apparition" data-category="redaction" data-platform="gpt">
+          <div class="carte-top-accent menthe"></div>
+          <div class="carte-body">
+            <div class="carte-header">
+              <div class="carte-icone menthe">📋</div>
+              <div class="carte-titre-zone">
+                <div class="carte-nom">Rayon</div>
+                <div class="carte-auteur">par Fabien</div>
+              </div>
+            </div>
+            <p class="carte-description">Génère les comptes-rendus de réunion à partir d'une transcription ou de notes brutes. Identifie les actions et les décisions.</p>
+            <div class="carte-footer">
+              <div class="carte-tags">
+                <span class="tag">Rédaction</span>
+                <span class="tag">GPT-4o</span>
+              </div>
+              <div class="carte-meta">
+                <span class="meta-item">173 runs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW CARD -->
+        <div class="carte-nouvelle apparition">
+          <div class="carte-nouvelle-icon">+</div>
+          <div class="carte-nouvelle-text">Proposer un assistant</div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-titre">Fabrique de l'Adoption Numérique</div>
+      <div class="footer-sous-titre">e.SNCF Solutions · Direction Numérique Groupe</div>
+      <div class="footer-filet"></div>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // Apparition au scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.apparition').forEach(el => observer.observe(el));
+
+  // Filter chips (category)
+  document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip[data-filter]').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const filter = chip.dataset.filter;
+      document.querySelectorAll('.carte-assistant, .carte-featured').forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      document.querySelector('.carte-nouvelle').style.display = '';
+    });
+  });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.carte-assistant, .carte-featured').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
