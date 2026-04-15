@@ -5,6 +5,21 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [0.5.0] — 2026-04-15
+
+### Ajouté
+- **`proposer.html`** : page dédiée pleine page avec l'iframe Microsoft Forms, barre de navigation avec bouton "Retour", et avertissement si l'iframe est bloquée par le navigateur (lien direct de secours)
+- **Overlay de confirmation** sur `proposer.html` : après soumission du formulaire (détectée via le 2e chargement de l'iframe), un message s'affiche avec barre de progression avant redirection
+- **Popup de confirmation** sur `index.html` : au retour depuis `proposer.html` (paramètre `?merci=1`), une popup informe que la proposition sera examinée et ajoutée après validation
+
+### Modifié
+- Le bouton "Proposer un assistant" pointe désormais vers `proposer.html` au lieu d'ouvrir un panneau latéral
+
+### Supprimé
+- Panneau latéral (drawer) contenant l'iframe Forms
+
+---
+
 ## [0.4.0] — 2026-04-15
 
 ### Ajouté

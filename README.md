@@ -6,7 +6,8 @@ Bibliothèque interne recensant tous les assistants **Groupe SNCF GPT** créés 
 
 ```
 solstice/
-├── index.html              # Application (HTML + CSS + JS, fichier unique)
+├── index.html              # Page principale — catalogue des assistants
+├── proposer.html           # Page de soumission — formulaire Microsoft Forms
 ├── data/
 │   └── assistants.csv      # Base de données des assistants
 └── img/
@@ -48,21 +49,20 @@ Sunshine,"Prépare vos ateliers IAGEN de A à Z.",https://chatgpt.com/g/xxx,Math
 2. Renseignez le nom du fichier dans la colonne `image` du CSV
 3. Si aucune image n'est fournie, l'application affiche automatiquement les initiales du nom sur fond bleu marine
 
-## Brancher le formulaire Microsoft Forms
+## Formulaire de proposition (Microsoft Forms)
 
-Dans [`index.html`](index.html), repérez le commentaire `MICROSOFT FORMS` et remplacez le bloc `placeholder-forms` par :
+Le bouton "Proposer un assistant" ouvre [`proposer.html`](proposer.html), une page dédiée avec le formulaire intégré en iframe.
 
-```html
-<iframe
-  src="https://forms.office.com/Pages/ResponsePage.aspx?id=VOTRE_ID&embed=true"
-  title="Proposer un assistant"
-  loading="lazy">
-</iframe>
-```
+**Flux complet :**
+1. L'utilisateur remplit et soumet le formulaire
+2. Un message de confirmation s'affiche, puis redirection automatique vers l'accueil
+3. Une popup informe que la proposition sera examinée avant publication
 
-L'URL d'embed se trouve dans Forms → **Partager** → **Incorporer** → copier le `src` de l'iframe.
+**Pour changer l'URL du formulaire**, modifiez le `src` de l'iframe dans [`proposer.html`](proposer.html) (deux occurrences : l'iframe et le lien de secours).
 
-Après réception des réponses du formulaire, mettez à jour `data/assistants.csv` manuellement et ajoutez l'image correspondante dans `img/`.
+**Après réception des réponses**, mettez à jour `data/assistants.csv` manuellement et ajoutez l'image dans `img/`.
+
+> Si l'iframe est bloquée par le navigateur (page ouverte en local ou Firefox strict), un lien de secours s'affiche pour ouvrir le formulaire dans un nouvel onglet. Le problème disparaît une fois déployé en HTTPS (GitHub Pages).
 
 ## Déploiement sur GitHub Pages
 
