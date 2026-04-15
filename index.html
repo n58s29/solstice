@@ -368,103 +368,68 @@
       flex-shrink: 0;
     }
 
-    /* ── Panneau Forms ── */
-    .overlay {
+    /* ── Popup confirmation retour ── */
+    .popup-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,15,40,.38);
-      backdrop-filter: blur(2px);
+      background: rgba(0,15,40,.45);
+      backdrop-filter: blur(3px);
       z-index: 200;
+      align-items: center;
+      justify-content: center;
     }
-    .overlay.ouvert { display: flex; justify-content: flex-end; }
-    .panneau {
+    .popup-overlay.visible { display: flex; }
+    .popup {
       background: var(--surface-flottante);
-      width: min(600px, 100vw);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: -6px 0 32px rgba(0,15,40,.18);
-      animation: glisser 0.28s ease-out;
-    }
-    @keyframes glisser { from{transform:translateX(100%)} to{transform:translateX(0)} }
-
-    .panneau-entete {
-      padding: 1.5rem 1.75rem;
-      border-bottom: 1px solid var(--bordure);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      flex-shrink: 0;
-    }
-    .panneau-titre { font-size: 1.05rem; font-weight: 700; color: var(--primaire); }
-    .panneau-sous { font-size: 0.8rem; color: var(--sur-surface-2); margin-top: 0.2rem; }
-
-    .btn-fermer {
-      background: var(--surface);
-      border: none;
-      border-radius: 8px;
-      width: 32px; height: 32px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--sur-surface-2);
-      flex-shrink: 0;
-      transition: background 0.15s, color 0.15s;
-    }
-    .btn-fermer:hover { background: var(--surface-haute); color: var(--sur-surface); }
-
-    .panneau-note {
-      padding: 0.875rem 1.75rem;
-      background: #eef6fd;
-      border-bottom: 1px solid #c8e0f4;
-      font-size: 0.8rem;
-      color: #0070b8;
-      display: flex;
-      gap: 0.6rem;
-      align-items: flex-start;
-      flex-shrink: 0;
-    }
-    .panneau-note svg { flex-shrink: 0; margin-top: 1px; }
-
-    .panneau-corps {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-    .panneau-corps iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .placeholder-forms {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      padding: 2.5rem;
+      border-radius: 16px;
+      padding: 2.25rem 2rem;
+      max-width: 400px;
+      width: calc(100vw - 2rem);
       text-align: center;
-      gap: 1rem;
+      box-shadow: 0 20px 60px rgba(0,15,40,.22);
+      animation: pop 0.3s ease-out;
+    }
+    @keyframes pop { from{transform:scale(.92);opacity:0} to{transform:scale(1);opacity:1} }
+    .popup-icone {
+      width: 56px; height: 56px;
+      background: #eef9f4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+    }
+    .popup-icone svg { color: #1a8a5a; }
+    .popup-titre {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primaire);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .popup-texte {
+      font-size: 0.875rem;
       color: var(--sur-surface-2);
+      line-height: 1.65;
     }
-    .placeholder-forms svg { opacity: 0.25; }
-    .placeholder-forms-titre { font-size: 0.95rem; font-weight: 600; color: var(--primaire); }
-    .placeholder-forms-texte { font-size: 0.8125rem; line-height: 1.65; max-width: 300px; }
-    .placeholder-forms-code {
-      font-size: 0.75rem;
-      font-family: 'Consolas', 'Courier New', monospace;
-      background: var(--surface);
-      border: 1px solid var(--surface-haute);
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      color: #0070b8;
-      word-break: break-all;
-      max-width: 100%;
-      text-align: left;
+    .popup-texte strong { color: var(--primaire); }
+    .btn-popup-fermer {
+      margin-top: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      background: var(--primaire);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.55rem 1.5rem;
+      font-family: var(--police);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
     }
+    .btn-popup-fermer:hover { background: var(--primaire-clair); }
 
     /* ── Filtre métiers sidebar ── */
     .filtre-label {
@@ -590,16 +555,30 @@
           <div class="entete-titre">Assistants disponibles</div>
           <div class="entete-sous" id="compte">Chargement…</div>
         </div>
-        <button class="btn-proposer" id="btnProposer">
+        <a class="btn-proposer" href="proposer.html">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
           Proposer un assistant
-        </button>
+        </a>
       </div>
 
       <div class="grille" id="grille"></div>
 
+    </div>
+
+    <!-- Popup confirmation après soumission Forms -->
+    <div class="popup-overlay" id="popupOverlay">
+      <div class="popup">
+        <div class="popup-icone">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="popup-titre">Proposition reçue, merci !</div>
+        <p class="popup-texte">Votre assistant sera examiné et ajouté sur la plateforme <strong>Groupe SNCF GPT</strong> après validation par l'équipe FAN.</p>
+        <button class="btn-popup-fermer" id="btnPopupFermer">Fermer</button>
+      </div>
     </div>
 
     <footer>
@@ -613,56 +592,6 @@
 
 </div>
 
-<!-- ── Panneau Forms ── -->
-<div class="overlay" id="overlay">
-  <div class="panneau" role="dialog" aria-modal="true" aria-label="Proposer un assistant">
-    <div class="panneau-entete">
-      <div>
-        <div class="panneau-titre">Proposer un assistant</div>
-        <div class="panneau-sous">Remplissez le formulaire. Les réponses vous seront transmises pour mise à jour manuelle du catalogue.</div>
-      </div>
-      <button class="btn-fermer" id="btnFermer" aria-label="Fermer">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
-    <div class="panneau-note">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <span>Après validation, mettez à jour <code>data/assistants.csv</code> et ajoutez l'image dans <code>img/</code> sur le repo GitHub.</span>
-    </div>
-    <div class="panneau-corps" id="panneauCorps">
-      <iframe
-        id="formsIframe"
-        src="https://forms.office.com/Pages/ResponsePage.aspx?id=OIJ8SplXFkufxprY_OWn2VjiTl_lh9JOrcLI5qF4DwFUQ1VCTEZCUVRNMFAzVTA5MTNEOVRGTlNaVS4u&embed=true"
-        title="Proposer un assistant"
-        frameborder="0" marginwidth="0" marginheight="0"
-        style="width:100%;height:100%;border:none;"
-        allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen
-        loading="lazy">
-      </iframe>
-      <div id="formsSecours" style="display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2.5rem;text-align:center;gap:1.25rem;color:var(--sur-surface-2);">
-        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3">
-          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
-          <line x1="9" y1="21" x2="9" y2="9"/>
-        </svg>
-        <div style="font-size:.95rem;font-weight:700;color:var(--primaire);">Le formulaire ne peut pas s'afficher ici</div>
-        <p style="font-size:.8125rem;line-height:1.65;max-width:300px;">Votre navigateur bloque l'affichage de formulaires externes dans un cadre. Ouvrez-le directement dans un nouvel onglet.</p>
-        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=OIJ8SplXFkufxprY_OWn2VjiTl_lh9JOrcLI5qF4DwFUQ1VCTEZCUVRNMFAzVTA5MTNEOVRGTlNaVS4u"
-           target="_blank" rel="noopener"
-           style="display:inline-flex;align-items:center;gap:.45rem;background:var(--primaire);color:#fff;border-radius:10px;padding:.6rem 1.25rem;font-family:var(--police);font-size:.875rem;font-weight:600;text-decoration:none;box-shadow:0 2px 10px rgba(0,27,68,.2);">
-          Ouvrir le formulaire
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
   // ── Config ──────────────────────────────────────
@@ -880,6 +809,20 @@
     afficher();
   });
 
+  // ── Popup confirmation après retour de proposer.html ────
+  if (new URLSearchParams(window.location.search).get('merci') === '1') {
+    document.getElementById('popupOverlay').classList.add('visible');
+    // Nettoyer l'URL sans recharger
+    history.replaceState({}, '', window.location.pathname);
+  }
+  document.getElementById('btnPopupFermer').addEventListener('click', () => {
+    document.getElementById('popupOverlay').classList.remove('visible');
+  });
+  document.getElementById('popupOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('popupOverlay'))
+      document.getElementById('popupOverlay').classList.remove('visible');
+  });
+
   // Chips métiers
   document.querySelectorAll('.chip-metier').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -895,34 +838,7 @@
     });
   });
 
-  // ── Panneau Forms ────────────────────────────────
-  const overlay = document.getElementById('overlay');
 
-  document.getElementById('btnProposer').addEventListener('click', () => {
-    overlay.classList.add('ouvert');
-    document.body.style.overflow = 'hidden';
-  });
-
-  function fermer() {
-    overlay.classList.remove('ouvert');
-    document.body.style.overflow = '';
-  }
-
-  // Détection échec iframe (bloquée par le navigateur)
-  const formsIframe = document.getElementById('formsIframe');
-  const formsSecours = document.getElementById('formsSecours');
-  let iframeOk = false;
-  formsIframe.addEventListener('load', () => { iframeOk = true; });
-  setTimeout(() => {
-    if (!iframeOk || formsIframe.contentDocument === null) {
-      formsIframe.style.display = 'none';
-      formsSecours.style.display = 'flex';
-    }
-  }, 3000);
-
-  document.getElementById('btnFermer').addEventListener('click', fermer);
-  overlay.addEventListener('click', e => { if (e.target === overlay) fermer(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') fermer(); });
 
   // ── Données de secours ───────────────────────────
   const SECOURS = [

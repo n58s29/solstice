@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposer un assistant — SOLSTICE</title>
+  <style>
+    :root {
+      --primaire: #001b44;
+      --primaire-clair: #123062;
+      --surface: #f0f2f8;
+      --surface-flottante: #ffffff;
+      --sur-surface-2: #5a5f70;
+      --bordure: rgba(0, 26, 66, 0.09);
+      --police: 'Avenir', 'Avenir Next', 'Segoe UI', Arial, sans-serif;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--police);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Barre de navigation ── */
+    .barre {
+      background: var(--surface-flottante);
+      border-bottom: 1px solid var(--bordure);
+      padding: 0 1.75rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+    .barre-gauche { display: flex; align-items: center; gap: 1rem; }
+
+    .btn-retour {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: 1.5px solid var(--bordure);
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      font-family: var(--police);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--sur-surface-2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .btn-retour:hover {
+      border-color: var(--primaire);
+      color: var(--primaire);
+      background: rgba(0,27,68,.04);
+    }
+
+    .barre-titre {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--primaire);
+      letter-spacing: -0.01em;
+    }
+    .barre-sous {
+      font-size: 0.8rem;
+      color: var(--sur-surface-2);
+    }
+
+    /* ── Corps ── */
+    .corps {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Message de chargement / blocage */
+    .avertissement {
+      display: none;
+      background: #fff8e6;
+      border-bottom: 1px solid #f0d890;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.8rem;
+      color: #7a5c00;
+      gap: 0.6rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .avertissement.visible { display: flex; }
+    .avertissement a {
+      color: var(--primaire);
+      font-weight: 600;
+      margin-left: 0.25rem;
+    }
+
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+
+    /* ── Overlay redirection ── */
+    .overlay-redirect {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,15,40,.55);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay-redirect.visible { display: flex; }
+    .redirect-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,15,40,.25);
+      animation: pop 0.3s ease-out;
+    }
+    @keyframes pop { from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1} }
+    .redirect-icone {
+      width: 56px; height: 56px;
+      background: #eef9f4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+    }
+    .redirect-icone svg { color: #1a8a5a; }
+    .redirect-titre {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primaire);
+      margin-bottom: 0.6rem;
+    }
+    .redirect-texte {
+      font-size: 0.875rem;
+      color: var(--sur-surface-2);
+      line-height: 1.6;
+    }
+    .redirect-barre {
+      height: 4px;
+      background: var(--surface);
+      border-radius: 2px;
+      margin-top: 1.5rem;
+      overflow: hidden;
+    }
+    .redirect-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #0070b8, #00a878);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 3s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="barre">
+    <div class="barre-gauche">
+      <a class="btn-retour" href="index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Retour
+      </a>
+      <div>
+        <div class="barre-titre">Proposer un assistant</div>
+        <div class="barre-sous">Groupe SNCF GPT · SOLSTICE</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="avertissement" id="avertissement">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span>Le formulaire ne peut pas s'afficher ici (page ouverte en local ou navigateur strict).
+      <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=OIJ8SplXFkufxprY_OWn2VjiTl_lh9JOrcLI5qF4DwFUQ1VCTEZCUVRNMFAzVTA5MTNEOVRGTlNaVS4u" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a>
+    </span>
+  </div>
+
+  <div class="corps">
+    <iframe
+      id="formsIframe"
+      src="https://forms.office.com/Pages/ResponsePage.aspx?id=OIJ8SplXFkufxprY_OWn2VjiTl_lh9JOrcLI5qF4DwFUQ1VCTEZCUVRNMFAzVTA5MTNEOVRGTlNaVS4u&embed=true"
+      title="Proposer un assistant"
+      allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- Overlay de confirmation avant redirection -->
+  <div class="overlay-redirect" id="overlayRedirect">
+    <div class="redirect-card">
+      <div class="redirect-icone">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div class="redirect-titre">Proposition reçue, merci !</div>
+      <p class="redirect-texte">Votre assistant sera examiné et ajouté sur la plateforme <strong>Groupe SNCF GPT</strong> après validation par l'équipe FAN.</p>
+      <div class="redirect-barre">
+        <div class="redirect-progress" id="redirectProgress"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const iframe = document.getElementById('formsIframe');
+  const overlay = document.getElementById('overlayRedirect');
+  const progress = document.getElementById('redirectProgress');
+  let loadCount = 0;
+
+  // Détection de la soumission : le formulaire déclenche un 2e chargement
+  // (page de remerciement) après soumission
+  iframe.addEventListener('load', () => {
+    loadCount++;
+    if (loadCount === 1) {
+      // Premier load = formulaire affiché, on cache l'avertissement si c'est ok
+      clearTimeout(blocageTimeout);
+    }
+    if (loadCount >= 2) {
+      // Deuxième load = formulaire soumis → page de remerciement
+      soumis();
+    }
+  });
+
+  // Si l'iframe ne charge pas en 4s → afficher l'avertissement
+  const blocageTimeout = setTimeout(() => {
+    if (loadCount === 0) {
+      document.getElementById('avertissement').classList.add('visible');
+    }
+  }, 4000);
+
+  function soumis() {
+    overlay.classList.add('visible');
+    // Lancer la barre de progression sur 3s puis rediriger
+    requestAnimationFrame(() => {
+      progress.style.width = '100%';
+    });
+    setTimeout(() => {
+      window.location.href = 'index.html?merci=1';
+    }, 3100);
+  }
+</script>
+
+</body>
+</html>
