@@ -239,14 +239,14 @@
       justify-content: space-between;
       align-items: flex-start;
     }
-    .carte-img {
+    .carte-picto {
       width: 52px;
       height: 52px;
       border-radius: 12px;
-      object-fit: cover;
-      background: var(--surface-basse);
       flex-shrink: 0;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn-star {
@@ -652,23 +652,26 @@
     afficher();
   }
 
-  // ── Placeholder image (initiales) ───────────────
-  function imgPlaceholder(nom) {
-    const ini = nom.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
-    // Palette de bleus SNCF
-    const palettes = [
-      { bg: '#001b44', fg: '#ffffff' },
-      { bg: '#0a2d6e', fg: '#ffffff' },
-      { bg: '#0070b8', fg: '#ffffff' },
-      { bg: '#004f8c', fg: '#ffffff' },
-    ];
-    const p = palettes[nom.charCodeAt(0) % palettes.length];
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-      <rect width="52" height="52" rx="12" fill="${p.bg}"/>
-      <text x="26" y="34" font-family="'Avenir','Segoe UI',sans-serif" font-size="19" font-weight="700"
-        fill="${p.fg}" text-anchor="middle" dominant-baseline="auto">${ini}</text>
-    </svg>`;
-    return 'data:image/svg+xml,' + encodeURIComponent(svg);
+  // ── Pictos métiers ───────────────────────────────
+  const PICTOS = {
+    'Transverse':              { color: '#0070b8', svg: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
+    'RH':                      { color: '#c0392b', svg: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+    'Achats':                  { color: '#d97706', svg: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>' },
+    'Finance':                 { color: '#16a34a', svg: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
+    'Marketing & Com':         { color: '#7c3aed', svg: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+    'Ingénierie':              { color: '#475569', svg: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>' },
+    'Exploitation':            { color: '#ea580c', svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+    'Commercial':              { color: '#0369a1', svg: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>' },
+    'Juridique':               { color: '#1e293b', svg: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
+    'Sécurité':                { color: '#b91c1c', svg: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' },
+    'IT & Numérique':          { color: '#004f8c', svg: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>' },
+    'Immobilier & Facilities': { color: '#0f766e', svg: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>' },
+  };
+
+  function pictoMetier(metiers) {
+    const tag = metiers ? metiers.split('|')[0].trim() : '';
+    const p = PICTOS[tag] || { color: '#001b44', svg: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' };
+    return `<div class="carte-picto" style="background:${p.color}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="26" height="26">${p.svg}</svg></div>`;
   }
 
   // ── Rendu ────────────────────────────────────────
@@ -723,7 +726,6 @@
   // ── Création carte ───────────────────────────────
   function creerCarte(a, i) {
     const estFavori = favoris.has(cle(a));
-    const imgSrc = a.image ? `img/${a.image}` : imgPlaceholder(a.nom);
 
     const carte = document.createElement('div');
     carte.className = 'carte app';
@@ -732,8 +734,7 @@
 
     carte.innerHTML = `
       <div class="carte-top">
-        <img class="carte-img" src="${imgSrc}" alt="${a.nom}"
-          onerror="this.src='${imgPlaceholder(a.nom)}'">
+        ${pictoMetier(a.metiers)}
         <button class="btn-star ${estFavori ? 'favori' : ''}" aria-label="${estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}" title="${estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="${estFavori ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
