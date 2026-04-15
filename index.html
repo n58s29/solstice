@@ -202,6 +202,113 @@
     .btn-proposer:active { transform: scale(0.97); }
     .btn-proposer svg { flex-shrink: 0; }
 
+    /* ── Groupement boutons entête ── */
+    .entete-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+    /* ── Bouton import Excel ── */
+    .btn-import {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px;
+      background: none;
+      border: 1.5px solid rgba(0,27,68,0.18);
+      border-radius: 8px; cursor: pointer;
+      color: var(--sur-surface-2);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-import:hover { background: var(--surface-basse); border-color: var(--primaire); color: var(--primaire); }
+    .btn-import:active { transform: scale(0.96); }
+
+    /* ── Modale import ── */
+    .import-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .import-overlay.visible { opacity: 1; pointer-events: all; }
+    .import-modale {
+      background: #fff; border-radius: 16px;
+      width: min(700px, 95vw); max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 8px 40px rgba(0,27,68,0.22); overflow: hidden;
+    }
+    .import-entete {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--surface-basse); flex-shrink: 0;
+    }
+    .import-titre {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.95rem; font-weight: 700; color: var(--primaire);
+    }
+    .import-fermer {
+      background: none; border: none; cursor: pointer;
+      color: var(--sur-surface-2); border-radius: 6px; padding: 4px;
+      transition: background 0.15s, color 0.15s; line-height: 0;
+    }
+    .import-fermer:hover { background: var(--surface-basse); color: var(--primaire); }
+    .import-corps { padding: 1.4rem; overflow-y: auto; flex: 1; }
+    .import-dropzone {
+      border: 2px dashed var(--surface-haute); border-radius: 12px;
+      padding: 2.5rem 1.5rem; text-align: center;
+      color: var(--sur-surface-2); cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .import-dropzone:hover, .import-dropzone.drag { border-color: var(--primaire); background: var(--surface); }
+    .import-dropzone p { margin: 0 0 0.4rem; font-size: 0.88rem; }
+    .import-dropzone .import-ou { font-size: 0.8rem; opacity: 0.55; margin: 0.5rem 0; }
+    .btn-import-fichier {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--primaire); color: #fff; border-radius: 8px;
+      padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; margin-top: 0.5rem; transition: background 0.15s;
+      font-family: var(--police);
+    }
+    .btn-import-fichier:hover { background: var(--primaire-clair); }
+    .import-info { font-size: 0.84rem; color: var(--sur-surface-2); margin: 0 0 0.85rem; }
+    .import-info code { background: var(--surface-basse); padding: 1px 5px; border-radius: 4px; font-size: 0.82rem; }
+    .import-tableau-wrap { overflow-x: auto; border: 1px solid var(--surface-basse); border-radius: 10px; }
+    .import-tableau { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .import-tableau th {
+      background: var(--surface); padding: 0.55rem 0.8rem;
+      text-align: left; font-weight: 600; color: var(--primaire);
+      border-bottom: 1px solid var(--surface-basse); white-space: nowrap;
+    }
+    .import-tableau td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--surface-basse); vertical-align: top; }
+    .import-tableau tr:last-child td { border-bottom: none; }
+    .import-tableau tr:hover td { background: var(--surface); }
+    .import-tableau input[type=checkbox] { accent-color: var(--primaire); width: 15px; height: 15px; cursor: pointer; }
+    .import-pied {
+      padding: 0.9rem 1.4rem; border-top: 1px solid var(--surface-basse);
+      display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;
+    }
+    .import-result {
+      width: 100%; min-height: 110px; max-height: 240px;
+      font-family: 'Courier New', monospace; font-size: 0.76rem;
+      border: 1px solid var(--surface-basse); border-radius: 8px;
+      padding: 0.75rem; resize: vertical;
+      background: var(--surface); color: var(--sur-surface);
+      box-sizing: border-box; line-height: 1.5;
+    }
+    .btn-gen {
+      background: var(--primaire); color: #fff; border: none;
+      border-radius: 8px; padding: 0.5rem 1.2rem;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      font-family: var(--police); transition: background 0.15s; white-space: nowrap;
+    }
+    .btn-gen:hover { background: var(--primaire-clair); }
+    .btn-gen:disabled { opacity: 0.38; cursor: default; }
+    .btn-ghost {
+      background: none; border: 1.5px solid var(--surface-haute);
+      color: var(--sur-surface-2); border-radius: 8px;
+      padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; font-family: var(--police);
+      transition: border-color 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .btn-ghost:hover { border-color: var(--primaire); color: var(--primaire); }
+    .import-copie-ok { font-size: 0.82rem; color: #16a34a; font-weight: 600; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
+    .import-copie-ok.visible { opacity: 1; }
+
     /* ── Grille ── */
     .grille {
       display: grid;
@@ -555,12 +662,19 @@
           <div class="entete-titre">Assistants disponibles</div>
           <div class="entete-sous" id="compte">Chargement…</div>
         </div>
-        <a class="btn-proposer" href="proposer.html">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          Proposer un assistant
-        </a>
+        <div class="entete-actions">
+          <button class="btn-import" id="btnImport" title="Convertir un export Excel Forms en lignes CSV">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/>
+            </svg>
+          </button>
+          <a class="btn-proposer" href="proposer.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Proposer un assistant
+          </a>
+        </div>
       </div>
 
       <div class="grille" id="grille"></div>
@@ -852,7 +966,228 @@
 
   // ── Init ─────────────────────────────────────────
   charger();
+
+  // ── Import Excel Forms → CSV ──────────────────────
+  (function () {
+    let donnees = [];
+    let etape = 1;
+
+    const overlay  = document.getElementById('importOverlay');
+    const step1    = document.getElementById('importStep1');
+    const step2    = document.getElementById('importStep2');
+    const step3    = document.getElementById('importStep3');
+    const retour   = document.getElementById('importRetour');
+    const actionBtn = document.getElementById('importAction');
+    const copieOk  = document.getElementById('importCopieOk');
+
+    // Ouvrir
+    document.getElementById('btnImport').addEventListener('click', () => {
+      chargerSheetJS(() => { allerEtape(1); overlay.classList.add('visible'); });
+    });
+
+    // Fermer
+    document.getElementById('importFermer').addEventListener('click', fermer);
+    overlay.addEventListener('click', e => { if (e.target === overlay) fermer(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('visible')) fermer(); });
+
+    function fermer() { overlay.classList.remove('visible'); }
+
+    function allerEtape(n) {
+      etape = n;
+      step1.hidden = n !== 1;
+      step2.hidden = n !== 2;
+      step3.hidden = n !== 3;
+      retour.hidden = n === 1;
+      copieOk.classList.remove('visible');
+      if (n === 1) { actionBtn.textContent = 'Générer les lignes CSV'; actionBtn.disabled = true; }
+      if (n === 2) majBtnGenerer();
+      if (n === 3) { actionBtn.textContent = 'Copier'; actionBtn.disabled = false; }
+    }
+
+    retour.addEventListener('click', () => allerEtape(etape - 1));
+
+    actionBtn.addEventListener('click', () => {
+      if (etape === 2) genererCSV();
+      else if (etape === 3) copier();
+    });
+
+    // Drag & drop
+    const dz = document.getElementById('importDropzone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); if (e.dataTransfer.files[0]) lireFichier(e.dataTransfer.files[0]); });
+    document.getElementById('importFichier').addEventListener('change', e => { if (e.target.files[0]) lireFichier(e.target.files[0]); });
+
+    // Chargement SheetJS à la demande
+    function chargerSheetJS(cb) {
+      if (window.XLSX) { cb(); return; }
+      const s = document.createElement('script');
+      s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+      s.onload = cb;
+      s.onerror = () => alert('Impossible de charger la bibliothèque Excel. Vérifiez votre connexion.');
+      document.head.appendChild(s);
+    }
+
+    // Lecture et parsing du fichier
+    function lireFichier(fichier) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const wb   = XLSX.read(e.target.result, { type: 'array' });
+          const ws   = wb.Sheets[wb.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+          if (!rows.length) { alert('Aucune donnée trouvée dans le fichier.'); return; }
+          donnees = rows;
+          remplirTableau(rows);
+          allerEtape(2);
+        } catch (err) { alert('Erreur de lecture : ' + err.message); }
+      };
+      reader.readAsArrayBuffer(fichier);
+    }
+
+    // Détection flexible des colonnes par mots-clés
+    function col(obj, mots) {
+      const cle = Object.keys(obj).find(k => mots.some(m => k.toLowerCase().includes(m.toLowerCase())));
+      return cle ? String(obj[cle] ?? '').trim() : '';
+    }
+
+    function normaliseMetiers(v) {
+      return v.split(';').map(s => s.trim()).filter(Boolean).join('|');
+    }
+
+    // Tableau de sélection
+    function remplirTableau(rows) {
+      const tbody = document.getElementById('importTbody');
+      tbody.innerHTML = '';
+      rows.forEach((row, i) => {
+        const nom     = col(row, ["nom de l'assistant", 'nom assistant', 'assistant']);
+        const metier  = normaliseMetiers(col(row, ['catégorie de métier', 'categorie de metier', 'métier', 'metier']));
+        const contact = col(row, ['nom du contact', 'contact']);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="checkbox" class="import-cb" data-i="${i}" checked></td>
+          <td>${nom  || '<em style="opacity:.45">—</em>'}</td>
+          <td>${metier  || '<em style="opacity:.45">—</em>'}</td>
+          <td>${contact || '<em style="opacity:.45">—</em>'}</td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('importInfo').textContent =
+        `${rows.length} assistant${rows.length > 1 ? 's' : ''} trouvé${rows.length > 1 ? 's' : ''}. Cochez ceux à convertir :`;
+
+      const selAll = document.getElementById('importSelAll');
+      selAll.checked = true;
+      selAll.onchange = e => { tbody.querySelectorAll('.import-cb').forEach(cb => cb.checked = e.target.checked); majBtnGenerer(); };
+      tbody.addEventListener('change', majBtnGenerer);
+      majBtnGenerer();
+    }
+
+    function majBtnGenerer() {
+      const nb = document.querySelectorAll('.import-cb:checked').length;
+      actionBtn.disabled = nb === 0;
+      actionBtn.textContent = nb > 0 ? `Générer ${nb} ligne${nb > 1 ? 's' : ''} CSV` : 'Générer les lignes CSV';
+    }
+
+    // Génération des lignes CSV
+    function csvEsc(v) {
+      const s = String(v ?? '').trim();
+      return (s.includes(',') || s.includes('"') || s.includes('\n'))
+        ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+
+    function genererCSV() {
+      const selects = [...document.querySelectorAll('.import-cb:checked')].map(cb => donnees[+cb.dataset.i]);
+      const lignes  = selects.map(row => {
+        const nom     = col(row, ["nom de l'assistant", 'nom assistant', 'assistant']);
+        const desc    = col(row, ['description']);
+        const lien    = col(row, ['lien groupe sncf', 'lien', 'url']);
+        const contact = col(row, ['nom du contact', 'contact']);
+        const metiers = normaliseMetiers(col(row, ['catégorie de métier', 'categorie de metier', 'métier', 'metier']));
+        return [nom, desc, lien, contact, '', metiers].map(csvEsc).join(',');
+      });
+      document.getElementById('importResult').value = lignes.join('\n');
+      allerEtape(3);
+    }
+
+    // Copier dans le presse-papier
+    function copier() {
+      const val = document.getElementById('importResult').value;
+      navigator.clipboard.writeText(val).then(flash).catch(() => {
+        const ta = document.getElementById('importResult');
+        ta.select(); document.execCommand('copy'); flash();
+      });
+    }
+    function flash() {
+      copieOk.classList.add('visible');
+      setTimeout(() => copieOk.classList.remove('visible'), 2500);
+    }
+  })();
 </script>
+
+<!-- ── Modale import Excel Forms ──────────────────────────────────── -->
+<div id="importOverlay" class="import-overlay" role="dialog" aria-modal="true" aria-label="Convertir Excel Forms en CSV">
+  <div class="import-modale">
+    <div class="import-entete">
+      <div class="import-titre">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+        Convertir un export Forms en lignes CSV
+      </div>
+      <button class="import-fermer" id="importFermer" aria-label="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Étape 1 : chargement fichier -->
+    <div class="import-corps" id="importStep1">
+      <div class="import-dropzone" id="importDropzone">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:.6rem;opacity:.4">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p>Glissez le fichier Excel (.xlsx) exporté depuis Forms</p>
+        <p class="import-ou">ou</p>
+        <label class="btn-import-fichier">
+          Choisir un fichier
+          <input type="file" id="importFichier" accept=".xlsx,.xls" hidden>
+        </label>
+      </div>
+    </div>
+
+    <!-- Étape 2 : sélection des lignes -->
+    <div class="import-corps" id="importStep2" hidden>
+      <p class="import-info" id="importInfo"></p>
+      <div class="import-tableau-wrap">
+        <table class="import-tableau">
+          <thead><tr>
+            <th><input type="checkbox" id="importSelAll" title="Tout sélectionner/désélectionner"></th>
+            <th>Nom de l'assistant</th>
+            <th>Métier(s)</th>
+            <th>Contact</th>
+          </tr></thead>
+          <tbody id="importTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Étape 3 : résultat CSV -->
+    <div class="import-corps" id="importStep3" hidden>
+      <p class="import-info">Copiez ces lignes et collez-les dans <code>data/assistants.csv</code> sur GitHub :</p>
+      <textarea class="import-result" id="importResult" readonly spellcheck="false"></textarea>
+    </div>
+
+    <!-- Pied -->
+    <div class="import-pied">
+      <button class="btn-ghost" id="importRetour" hidden>← Retour</button>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-left:auto">
+        <span class="import-copie-ok" id="importCopieOk">✓ Copié !</span>
+        <button class="btn-gen" id="importAction" disabled>Générer les lignes CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
