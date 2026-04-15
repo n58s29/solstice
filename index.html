@@ -3,286 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOLSTICE — Bibliothèque d'Assistants · Fabrique de l'Adoption Numérique</title>
+  <title>Solstice — Bibliothèque d'Assistants · Groupe SNCF GPT</title>
   <style>
     :root {
       --primaire: #001b44;
-      --primaire-conteneur: #123062;
+      --primaire-clair: #123062;
       --sur-primaire: #ffffff;
-      --sur-primaire-conteneur: #d1e0f0;
       --surface: #f0f2f8;
-      --surface-basse: #e8eaf2;
-      --surface-haute: #d8dae8;
+      --surface-basse: #e6e9f2;
+      --surface-haute: #d4d8e8;
       --surface-flottante: #ffffff;
       --sur-surface: #181c20;
-      --sur-surface-secondaire: #5a5f6e;
-      --cerulean: #0088cc;
-      --cerulean-bg: #e6f4fb;
-      --ambre: #c4900d;
-      --ambre-bg: #fdf3dc;
-      --menthe: #007a5e;
-      --menthe-bg: #e0f4ef;
-      --lavande: #5c4ec4;
-      --lavande-bg: #eeecfa;
-      --ocre: #c04a1a;
-      --ocre-bg: #fdeee8;
-      --bourgogne: #7a1e30;
-      --bourgogne-bg: #f5e8eb;
-      --ombre: rgba(0, 26, 66, 0.08);
-      --ombre-hover: rgba(0, 26, 66, 0.14);
-      --bordure: rgba(0, 26, 66, 0.08);
-      --police-display: 'Avenir', 'Avenir Next', 'Segoe UI', sans-serif;
-      --police-corps: 'Avenir', 'Avenir Next', 'Segoe UI', Arial, sans-serif;
-      --rayon-carte: 16px;
+      --sur-surface-2: #5a5f70;
+      --bordure: rgba(0, 26, 66, 0.09);
+      --ombre: rgba(0, 26, 66, 0.07);
+      --ombre-hover: rgba(0, 26, 66, 0.13);
+      --focus: rgba(0, 100, 200, 0.2);
+      --police: 'Avenir', 'Avenir Next', 'Segoe UI', Arial, sans-serif;
+      --rayon: 14px;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: var(--police-corps);
+      font-family: var(--police);
       background: var(--surface);
       color: var(--sur-surface);
-      font-weight: 300;
-      line-height: 1.65;
+      line-height: 1.6;
+      font-weight: 400;
     }
-    h1, h2 { font-family: var(--police-display); font-weight: 600; letter-spacing: -0.02em; color: var(--primaire); }
 
-    /* === LAYOUT === */
-    .layout-app {
+    /* ── Layout ── */
+    .layout {
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 280px 1fr;
       min-height: 100vh;
     }
 
-    /* === SIDEBAR === */
+    /* ── Sidebar ── */
     .sidebar {
       background: var(--surface-flottante);
       border-right: 1px solid var(--bordure);
-      padding: 2rem 1.5rem;
+      padding: 1.75rem 1.5rem;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
+      gap: 1.5rem;
     }
-    .sidebar-brand { margin-bottom: 2rem; }
-    .eyebrow {
-      font-size: 11px;
-      font-weight: 600;
+
+    .marque-eyebrow {
+      font-size: 10.5px;
+      font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--cerulean);
+      color: #0070b8;
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 0.75rem;
+      gap: 7px;
+      margin-bottom: 0.5rem;
     }
-    .point-vivant {
-      width: 6px; height: 6px;
+    .point {
+      width: 5px; height: 5px;
       border-radius: 50%;
-      background: var(--cerulean);
-      display: inline-block;
+      background: #0070b8;
       animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-    .sidebar-title {
-      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .marque-titre {
+      font-size: 1.9rem;
       font-weight: 700;
+      letter-spacing: -0.03em;
       color: var(--primaire);
-      line-height: 1.15;
+      line-height: 1.1;
     }
-    .sidebar-subtitle {
+    .marque-sous {
       font-size: 0.8125rem;
-      font-weight: 400;
-      color: var(--sur-surface-secondaire);
+      color: var(--sur-surface-2);
       margin-top: 0.4rem;
       line-height: 1.5;
     }
 
-    /* Search */
-    .sidebar-search { margin-bottom: 1.75rem; position: relative; }
-    .search-icon {
+    /* Recherche */
+    .recherche-wrap { position: relative; }
+    .recherche-wrap svg {
       position: absolute;
-      left: 12px; top: 50%;
+      left: 11px;
+      top: 50%;
       transform: translateY(-50%);
-      color: var(--sur-surface-secondaire);
-      font-size: 14px;
+      color: var(--sur-surface-2);
       pointer-events: none;
     }
-    .champ {
+    .champ-recherche {
+      width: 100%;
       background: var(--surface);
       border: 1.5px solid var(--surface-haute);
       border-radius: 10px;
-      padding: 0.65rem 1rem 0.65rem 2.25rem;
-      font-family: var(--police-corps);
+      padding: 0.6rem 0.875rem 0.6rem 2.2rem;
+      font-family: var(--police);
       font-size: 0.875rem;
-      font-weight: 400;
       color: var(--sur-surface);
       transition: border-color 0.2s, box-shadow 0.2s;
-      width: 100%;
     }
-    .champ:focus {
-      border-color: var(--cerulean);
-      box-shadow: 0 0 0 3px rgba(0,136,204,0.12);
+    .champ-recherche:focus {
       outline: none;
+      border-color: #0070b8;
+      box-shadow: 0 0 0 3px var(--focus);
     }
-    .champ::placeholder { color: var(--sur-surface-secondaire); }
+    .champ-recherche::placeholder { color: var(--sur-surface-2); }
 
-    /* Filters */
-    .sidebar-section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--sur-surface-secondaire);
-      margin-bottom: 0.6rem;
-    }
-    .filter-group { margin-bottom: 1.5rem; }
-    .filter-chip {
-      display: inline-block;
-      padding: 0.3rem 0.75rem;
-      font-size: 0.8125rem;
-      font-weight: 400;
-      color: var(--sur-surface-secondaire);
-      background: var(--surface);
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.15s;
-      margin: 0 0.3rem 0.35rem 0;
-      user-select: none;
-      border: 1.5px solid transparent;
-    }
-    .filter-chip:hover { background: var(--surface-haute); color: var(--sur-surface); }
-    .filter-chip.active { background: var(--primaire); color: #fff; border-color: var(--primaire); font-weight: 500; }
-    .filter-chip.active[data-color="cerulean"] { background: var(--cerulean); border-color: var(--cerulean); }
-    .filter-chip.active[data-color="menthe"] { background: var(--menthe); border-color: var(--menthe); }
-    .filter-chip.active[data-color="lavande"] { background: var(--lavande); border-color: var(--lavande); }
-    .filter-chip.active[data-color="ambre"] { background: var(--ambre); border-color: var(--ambre); }
-    .filter-chip.active[data-color="ocre"] { background: var(--ocre); border-color: var(--ocre); }
-    .filter-chip.active[data-color="bourgogne"] { background: var(--bourgogne); border-color: var(--bourgogne); }
-
-    /* Stats */
-    .sidebar-stats { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--bordure); }
-    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; }
-    .stat-label { font-size: 0.8125rem; color: var(--sur-surface-secondaire); }
-    .stat-value { font-size: 0.875rem; font-weight: 600; color: var(--primaire); }
-
-    /* === MAIN === */
-    .contenu-principal { padding: 2rem 2rem 2rem; background: var(--surface); min-height: 100vh; }
-
-    .content-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.75rem;
-    }
-    .content-header h2 { font-size: 1.375rem; }
-    .content-header-count { font-size: 0.8125rem; color: var(--sur-surface-secondaire); margin-top: 0.15rem; }
-
-    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
-
-    /* Bouton Proposer */
-    .btn-proposer {
+    /* Favoris toggle */
+    .toggle-favoris {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      background: none;
+      border: 1.5px solid var(--surface-haute);
+      border-radius: 10px;
+      padding: 0.55rem 0.875rem;
+      font-family: var(--police);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--sur-surface-2);
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+      text-align: left;
+    }
+    .toggle-favoris svg { flex-shrink: 0; }
+    .toggle-favoris:hover { border-color: var(--primaire); color: var(--primaire); }
+    .toggle-favoris.actif {
+      background: var(--primaire);
+      border-color: var(--primaire);
+      color: #fff;
+    }
+    .toggle-favoris.actif svg { color: #f0c040; }
+
+    /* Stats */
+    .sidebar-stats {
+      margin-top: auto;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--bordure);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .stat-label { color: var(--sur-surface-2); }
+    .stat-val { font-weight: 600; color: var(--primaire); }
+
+    /* ── Contenu principal ── */
+    .contenu { display: flex; flex-direction: column; min-height: 100vh; }
+    .contenu-inner { flex: 1; padding: 1.75rem 1.75rem 2rem; }
+
+    .entete {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+    .entete-titre {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--primaire);
+    }
+    .entete-sous {
+      font-size: 0.8125rem;
+      color: var(--sur-surface-2);
+      margin-top: 0.15rem;
+    }
+
+    .btn-proposer {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
       background: var(--primaire);
       color: #fff;
       border: none;
       border-radius: 10px;
       padding: 0.55rem 1.1rem;
-      font-family: var(--police-corps);
+      font-family: var(--police);
       font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px rgba(0,27,68,0.18);
+      white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0,27,68,.2);
+      transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+      flex-shrink: 0;
     }
-    .btn-proposer:hover { background: var(--primaire-conteneur); box-shadow: 0 4px 16px rgba(0,27,68,0.22); }
+    .btn-proposer:hover { background: var(--primaire-clair); box-shadow: 0 4px 18px rgba(0,27,68,.28); }
     .btn-proposer:active { transform: scale(0.97); }
-    .btn-proposer-plus {
-      font-size: 1.25rem;
-      font-weight: 300;
-      line-height: 1;
-    }
+    .btn-proposer svg { flex-shrink: 0; }
 
-    /* === GRILLE === */
-    .grille-assistants {
+    /* ── Grille ── */
+    .grille {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.1rem;
+      grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+      gap: 1rem;
     }
 
-    /* === CARTE ASSISTANT (style Groupe SNCF GPT) === */
-    .carte-assistant {
+    /* ── Carte assistant ── */
+    .carte {
       background: var(--surface-flottante);
-      border-radius: var(--rayon-carte);
-      padding: 1.25rem;
       border: 1px solid var(--bordure);
+      border-radius: var(--rayon);
+      padding: 1.25rem;
       box-shadow: 0 1px 4px var(--ombre);
-      transition: box-shadow 0.2s, transform 0.2s;
-      cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      position: relative;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: box-shadow 0.18s, transform 0.18s;
+      text-decoration: none;
+      color: inherit;
     }
-    .carte-assistant:hover {
-      box-shadow: 0 8px 28px var(--ombre-hover);
+    .carte:hover {
+      box-shadow: 0 6px 24px var(--ombre-hover);
       transform: translateY(-2px);
     }
+    .carte:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
 
-    /* Ligne haute : icône + actions */
-    .carte-ligne-haute {
+    /* Ligne haute : image + étoile */
+    .carte-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
     }
-    .carte-icone {
-      width: 48px; height: 48px;
+    .carte-img {
+      width: 52px;
+      height: 52px;
       border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
+      object-fit: cover;
+      background: var(--surface-basse);
       flex-shrink: 0;
+      display: block;
     }
-    .carte-icone.cerulean  { background: var(--cerulean-bg); }
-    .carte-icone.menthe    { background: var(--menthe-bg); }
-    .carte-icone.lavande   { background: var(--lavande-bg); }
-    .carte-icone.ambre     { background: var(--ambre-bg); }
-    .carte-icone.ocre      { background: var(--ocre-bg); }
-    .carte-icone.bourgogne { background: var(--bourgogne-bg); }
 
-    .carte-actions { display: flex; gap: 0.25rem; }
-    .btn-etoile, .btn-menu-carte {
+    .btn-star {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1.05rem;
-      color: var(--sur-surface-secondaire);
-      padding: 0.2rem 0.3rem;
+      padding: 4px;
       border-radius: 6px;
-      transition: background 0.15s, color 0.15s;
+      color: var(--sur-surface-2);
+      transition: color 0.15s, background 0.15s;
       line-height: 1;
+      flex-shrink: 0;
     }
-    .btn-etoile:hover { background: var(--ambre-bg); color: var(--ambre); }
-    .btn-etoile.favori { color: #f0a500; }
-    .btn-menu-carte:hover { background: var(--surface); }
+    .btn-star:hover { background: #fef9ec; color: #c49000; }
+    .btn-star.favori { color: #d4a017; }
+    .btn-star.favori svg path { fill: #d4a017; stroke: #d4a017; }
 
-    /* Contenu */
+    /* Contenu carte */
     .carte-nom {
-      font-family: var(--police-display);
       font-size: 1rem;
       font-weight: 700;
       color: var(--primaire);
       letter-spacing: -0.01em;
       line-height: 1.25;
     }
-    .carte-description {
+    .carte-desc {
       font-size: 0.8125rem;
-      font-weight: 400;
-      color: var(--sur-surface-secondaire);
-      line-height: 1.5;
+      color: var(--sur-surface-2);
+      line-height: 1.55;
       flex: 1;
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -290,683 +283,545 @@
       overflow: hidden;
     }
 
-    /* Tags */
-    .carte-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: auto; }
-    .tag {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-    }
-    .tag.cerulean  { background: var(--cerulean-bg);  color: var(--cerulean); }
-    .tag.menthe    { background: var(--menthe-bg);    color: var(--menthe); }
-    .tag.lavande   { background: var(--lavande-bg);   color: var(--lavande); }
-    .tag.ambre     { background: var(--ambre-bg);     color: var(--ambre); }
-    .tag.ocre      { background: var(--ocre-bg);      color: var(--ocre); }
-    .tag.bourgogne { background: var(--bourgogne-bg); color: var(--bourgogne); }
-    .tag.neutre    { background: var(--surface);      color: var(--sur-surface-secondaire); }
-    .tag.primaire  { background: rgba(0,27,68,0.07);  color: var(--primaire); }
-
-    /* === CARTE FEATURED === */
-    .carte-featured {
-      grid-column: 1 / -1;
-      background: linear-gradient(130deg, var(--primaire) 0%, #1a3a70 100%);
-      border-radius: var(--rayon-carte);
-      padding: 2rem;
+    /* Pied de carte */
+    .carte-pied {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.2s;
-      box-shadow: 0 4px 20px rgba(0,27,68,0.2);
-      gap: 2rem;
+      margin-top: 0.25rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--bordure);
+      gap: 0.5rem;
     }
-    .carte-featured:hover {
-      box-shadow: 0 12px 40px rgba(0,27,68,0.3);
-      transform: translateY(-2px);
-    }
-    .featured-content { flex: 1; }
-    .featured-eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #f0a500;
-      margin-bottom: 0.75rem;
-    }
-    .featured-nom {
-      font-family: var(--police-display);
-      font-size: clamp(1.5rem, 2.5vw, 2rem);
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-    }
-    .featured-description {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: rgba(255,255,255,0.75);
-      line-height: 1.6;
-      margin-top: 0.75rem;
-      max-width: 400px;
-    }
-    .featured-action { margin-top: 1.25rem; }
-    .btn-featured {
-      background: rgba(255,255,255,0.95);
-      color: var(--primaire);
-      border: none;
-      border-radius: 10px;
-      padding: 0.55rem 1.25rem;
-      font-family: var(--police-corps);
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-    }
-    .btn-featured:hover { background: #fff; }
-    .btn-featured:active { transform: scale(0.97); }
-    .featured-visual {
-      flex-shrink: 0;
+    .carte-contact {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--sur-surface-2);
+      min-width: 0;
     }
-    .featured-illustration {
-      width: 120px; height: 120px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .carte-contact span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .sun-icon { width: 80px; height: 80px; filter: drop-shadow(0 0 20px rgba(238,212,132,0.5)); }
-    .orbit {
-      position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-    .orbit-1 { width: 108px; height: 108px; animation: spin 20s linear infinite; }
-    .orbit-2 { width: 140px; height: 140px; animation: spin 30s linear infinite reverse; }
-    .orbit-dot {
-      position: absolute;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      top: -3.5px; left: 50%;
-      transform: translateX(-50%);
-    }
-    .orbit-dot.c1 { background: #0af; }
-    .orbit-dot.c2 { background: #f0a500; }
-    .orbit-dot.c3 { background: #00c896; top:auto;bottom:-3.5px; }
-    .orbit-dot.c4 { background: #a090f0; top:50%;left:-3.5px;transform:translateY(-50%); }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .carte-contact svg { flex-shrink: 0; color: var(--sur-surface-2); }
 
-    /* === VIDE === */
-    .grille-vide {
+    .btn-ouvrir {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: var(--surface);
+      border: 1px solid var(--surface-haute);
+      border-radius: 7px;
+      padding: 0.3rem 0.7rem;
+      font-family: var(--police);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--primaire);
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-ouvrir:hover {
+      background: var(--primaire);
+      border-color: var(--primaire);
+      color: #fff;
+    }
+    .btn-ouvrir:hover svg { color: #fff; }
+    .btn-ouvrir svg { color: var(--primaire); transition: color 0.15s; }
+
+    /* ── Vide ── */
+    .vide {
       grid-column: 1/-1;
       text-align: center;
       padding: 4rem 2rem;
-      color: var(--sur-surface-secondaire);
+      color: var(--sur-surface-2);
     }
-    .grille-vide-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-    .grille-vide-titre { font-size: 1rem; font-weight: 500; color: var(--primaire); }
-    .grille-vide-sous { font-size: 0.875rem; margin-top: 0.3rem; }
+    .vide-icone {
+      width: 48px; height: 48px;
+      margin: 0 auto 1rem;
+      opacity: 0.3;
+    }
+    .vide-titre { font-size: 1rem; font-weight: 600; color: var(--primaire); }
+    .vide-sous { font-size: 0.875rem; margin-top: 0.3rem; }
 
-    /* === FOOTER === */
+    /* ── Footer ── */
     footer {
       background: var(--surface-flottante);
       border-top: 1px solid var(--bordure);
-      padding: 1.5rem 2rem;
+      padding: 1.25rem 1.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 1rem;
     }
-    .footer-titre { font-size: 0.875rem; font-weight: 600; color: var(--primaire); }
-    .footer-sous { font-size: 0.8125rem; color: var(--sur-surface-secondaire); }
-    .footer-filet {
-      width: 60px; height: 3px;
-      background: linear-gradient(90deg, var(--cerulean), #f0a500, #00c896);
+    .footer-g { font-size: 0.8125rem; color: var(--sur-surface-2); }
+    .footer-g strong { color: var(--primaire); font-weight: 600; }
+    .footer-barre {
+      height: 3px; width: 48px;
+      background: linear-gradient(90deg, #0070b8, #00a878);
       border-radius: 2px;
+      flex-shrink: 0;
     }
 
-    /* === MODAL PANNEAU === */
-    .panneau-overlay {
+    /* ── Panneau Forms ── */
+    .overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,15,40,0.4);
-      z-index: 100;
+      background: rgba(0,15,40,.38);
       backdrop-filter: blur(2px);
+      z-index: 200;
     }
-    .panneau-overlay.ouvert { display: flex; justify-content: flex-end; }
+    .overlay.ouvert { display: flex; justify-content: flex-end; }
     .panneau {
       background: var(--surface-flottante);
-      width: min(640px, 100vw);
+      width: min(600px, 100vw);
       height: 100vh;
       display: flex;
       flex-direction: column;
-      box-shadow: -8px 0 40px rgba(0,15,40,0.2);
-      animation: glisser 0.3s ease-out;
+      box-shadow: -6px 0 32px rgba(0,15,40,.18);
+      animation: glisser 0.28s ease-out;
     }
-    @keyframes glisser { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    @keyframes glisser { from{transform:translateX(100%)} to{transform:translateX(0)} }
+
     .panneau-entete {
       padding: 1.5rem 1.75rem;
       border-bottom: 1px solid var(--bordure);
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      gap: 1rem;
       flex-shrink: 0;
     }
-    .panneau-titre { font-size: 1.1rem; font-weight: 700; color: var(--primaire); }
-    .panneau-sous {
-      font-size: 0.8125rem;
-      color: var(--sur-surface-secondaire);
-      margin-top: 0.2rem;
-      font-weight: 400;
-    }
+    .panneau-titre { font-size: 1.05rem; font-weight: 700; color: var(--primaire); }
+    .panneau-sous { font-size: 0.8rem; color: var(--sur-surface-2); margin-top: 0.2rem; }
+
     .btn-fermer {
       background: var(--surface);
       border: none;
       border-radius: 8px;
       width: 32px; height: 32px;
       cursor: pointer;
-      font-size: 1.1rem;
-      color: var(--sur-surface-secondaire);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s;
+      color: var(--sur-surface-2);
       flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
     }
-    .btn-fermer:hover { background: var(--surface-haute); }
-    .panneau-info {
-      padding: 1rem 1.75rem;
-      background: var(--cerulean-bg);
-      border-bottom: 1px solid rgba(0,136,204,0.15);
-      font-size: 0.8125rem;
-      color: var(--cerulean);
+    .btn-fermer:hover { background: var(--surface-haute); color: var(--sur-surface); }
+
+    .panneau-note {
+      padding: 0.875rem 1.75rem;
+      background: #eef6fd;
+      border-bottom: 1px solid #c8e0f4;
+      font-size: 0.8rem;
+      color: #0070b8;
       display: flex;
       gap: 0.6rem;
       align-items: flex-start;
       flex-shrink: 0;
     }
-    .panneau-corps { flex: 1; overflow: hidden; position: relative; }
+    .panneau-note svg { flex-shrink: 0; margin-top: 1px; }
+
+    .panneau-corps {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
     .panneau-corps iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
-    .forms-placeholder {
+    .placeholder-forms {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100%;
-      padding: 2rem;
+      padding: 2.5rem;
       text-align: center;
-      color: var(--sur-surface-secondaire);
       gap: 1rem;
+      color: var(--sur-surface-2);
     }
-    .forms-placeholder-icon { font-size: 3rem; opacity: 0.4; }
-    .forms-placeholder-titre { font-size: 1rem; font-weight: 600; color: var(--primaire); }
-    .forms-placeholder-texte { font-size: 0.875rem; line-height: 1.6; max-width: 320px; }
-    .forms-placeholder-url {
-      font-size: 0.8rem;
+    .placeholder-forms svg { opacity: 0.25; }
+    .placeholder-forms-titre { font-size: 0.95rem; font-weight: 600; color: var(--primaire); }
+    .placeholder-forms-texte { font-size: 0.8125rem; line-height: 1.65; max-width: 300px; }
+    .placeholder-forms-code {
+      font-size: 0.75rem;
+      font-family: 'Consolas', 'Courier New', monospace;
       background: var(--surface);
       border: 1px solid var(--surface-haute);
       border-radius: 8px;
       padding: 0.6rem 1rem;
-      font-family: monospace;
-      color: var(--cerulean);
+      color: #0070b8;
       word-break: break-all;
       max-width: 100%;
+      text-align: left;
     }
 
-    /* === APPARITION === */
-    .apparition { opacity: 0; transform: translateY(10px); transition: opacity 0.35s ease-out, transform 0.35s ease-out; }
-    .apparition.visible { opacity: 1; transform: translateY(0); }
+    /* ── Apparition ── */
+    .app { opacity: 0; transform: translateY(8px); transition: opacity 0.3s ease, transform 0.3s ease; }
+    .app.v { opacity: 1; transform: none; }
 
-    /* === RESPONSIVE === */
-    @media (max-width: 860px) {
-      .layout-app { grid-template-columns: 1fr; }
-      .sidebar { position: relative; height: auto; }
-      .contenu-principal { padding: 1.25rem; }
-      .carte-featured { flex-direction: column; }
-      .featured-visual { display: none; }
+    /* ── Responsive ── */
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .contenu-inner { padding: 1.25rem; }
     }
   </style>
 </head>
 <body>
 
-<div class="layout-app">
+<div class="layout">
 
-  <!-- ======== SIDEBAR ======== -->
+  <!-- ── Sidebar ── -->
   <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="eyebrow">
-        <span class="point-vivant"></span>
-        Bibliothèque d'Assistants
+    <div>
+      <div class="marque-eyebrow">
+        <span class="point"></span>
+        Groupe SNCF GPT
       </div>
-      <h1 class="sidebar-title">Solstice</h1>
-      <p class="sidebar-subtitle">Tous les assistants Groupe SNCF GPT de l'équipe, réunis au même endroit.</p>
+      <div class="marque-titre">Solstice</div>
+      <p class="marque-sous">Tous les assistants de l'équipe, réunis au même endroit.</p>
     </div>
 
-    <div class="sidebar-search">
-      <span class="search-icon">🔍</span>
-      <input type="text" class="champ" placeholder="Rechercher un assistant…" id="searchInput">
+    <div class="recherche-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="champ-recherche" type="text" id="recherche" placeholder="Rechercher un assistant…" autocomplete="off">
     </div>
 
-    <div class="filter-group">
-      <div class="sidebar-section-label">Catégorie</div>
-      <span class="filter-chip active" data-filter="all">Tous</span>
-      <span class="filter-chip" data-filter="atelier"   data-color="ambre">Ateliers</span>
-      <span class="filter-chip" data-filter="cadrage"   data-color="cerulean">Cadrage</span>
-      <span class="filter-chip" data-filter="redaction" data-color="menthe">Rédaction</span>
-      <span class="filter-chip" data-filter="dev"       data-color="lavande">Dev &amp; Tech</span>
-      <span class="filter-chip" data-filter="analyse"   data-color="ocre">Analyse</span>
-      <span class="filter-chip" data-filter="formation" data-color="bourgogne">Formation</span>
-    </div>
-
-    <div class="filter-group">
-      <div class="sidebar-section-label">Plateforme</div>
-      <span class="filter-chip active" data-filter-platform="all">Toutes</span>
-      <span class="filter-chip" data-filter-platform="gpt">GPT</span>
-      <span class="filter-chip" data-filter-platform="claude">Claude</span>
-      <span class="filter-chip" data-filter-platform="mistral">Mistral</span>
-    </div>
+    <button class="toggle-favoris" id="toggleFavoris">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      Mes favoris uniquement
+    </button>
 
     <div class="sidebar-stats">
       <div class="stat-row">
-        <span class="stat-label">Assistants publiés</span>
-        <span class="stat-value" id="statTotal">—</span>
+        <span class="stat-label">Assistants</span>
+        <span class="stat-val" id="statTotal">—</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Contributeurs</span>
-        <span class="stat-value" id="statContributeurs">—</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Dernière mise à jour</span>
-        <span class="stat-value" id="statDate">—</span>
+        <span class="stat-label">Mis à jour</span>
+        <span class="stat-val" id="statDate">—</span>
       </div>
     </div>
   </aside>
 
-  <!-- ======== MAIN ======== -->
-  <main>
-    <div class="contenu-principal">
+  <!-- ── Contenu ── -->
+  <div class="contenu">
+    <div class="contenu-inner">
 
-      <div class="content-header">
+      <div class="entete">
         <div>
-          <h2>Assistants disponibles</h2>
-          <div class="content-header-count" id="compteAssistants">Chargement…</div>
+          <div class="entete-titre">Assistants disponibles</div>
+          <div class="entete-sous" id="compte">Chargement…</div>
         </div>
-        <div class="header-actions">
-          <button class="btn-proposer" id="btnProposer">
-            <span class="btn-proposer-plus">+</span>
-            Proposer un assistant
-          </button>
-        </div>
+        <button class="btn-proposer" id="btnProposer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Proposer un assistant
+        </button>
       </div>
 
-      <div class="grille-assistants" id="grille">
-        <!-- Rendu dynamique via JS -->
-      </div>
+      <div class="grille" id="grille"></div>
 
     </div>
 
     <footer>
-      <div>
-        <div class="footer-titre">Fabrique de l'Adoption Numérique</div>
-        <div class="footer-sous">e.SNCF Solutions · Direction Numérique Groupe</div>
+      <div class="footer-g">
+        <strong>Fabrique de l'Adoption Numérique</strong><br>
+        e.SNCF Solutions · Direction Numérique Groupe
       </div>
-      <div class="footer-filet"></div>
+      <div class="footer-barre"></div>
     </footer>
-  </main>
+  </div>
+
 </div>
 
-<!-- ======== PANNEAU MICROSOFT FORMS ======== -->
-<div class="panneau-overlay" id="panneauOverlay">
-  <div class="panneau" id="panneau">
+<!-- ── Panneau Forms ── -->
+<div class="overlay" id="overlay">
+  <div class="panneau" role="dialog" aria-modal="true" aria-label="Proposer un assistant">
     <div class="panneau-entete">
       <div>
         <div class="panneau-titre">Proposer un assistant</div>
-        <div class="panneau-sous">Remplissez le formulaire — votre assistant sera ajouté à la bibliothèque après validation.</div>
+        <div class="panneau-sous">Remplissez le formulaire. Les réponses vous seront transmises pour mise à jour manuelle du catalogue.</div>
       </div>
-      <button class="btn-fermer" id="btnFermer" title="Fermer">✕</button>
+      <button class="btn-fermer" id="btnFermer" aria-label="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
     </div>
-    <div class="panneau-info">
-      <span>ℹ</span>
-      <span>Les réponses sont synchronisées automatiquement avec la base de données GitHub via Power Automate.</span>
+    <div class="panneau-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Après validation, mettez à jour <code>data/assistants.csv</code> et ajoutez l'image dans <code>img/</code> sur le repo GitHub.</span>
     </div>
-    <div class="panneau-corps" id="panneauCorps">
+    <div class="panneau-corps">
       <!--
-        INTÉGRATION MICROSOFT FORMS :
-        Remplacez le bloc "forms-placeholder" ci-dessous par un iframe pointant
-        vers votre formulaire Microsoft Forms.
-
-        URL d'embed Forms (exemple) :
-        https://forms.office.com/Pages/ResponsePage.aspx?id=VOTRE_ID&embed=true
-
-        Décommentez et adaptez :
+        MICROSOFT FORMS — remplacez ce bloc par :
         <iframe
           src="https://forms.office.com/Pages/ResponsePage.aspx?id=VOTRE_ID&embed=true"
           title="Proposer un assistant"
-          allow="camera; microphone; geolocation"
           loading="lazy">
         </iframe>
       -->
-      <div class="forms-placeholder">
-        <div class="forms-placeholder-icon">📝</div>
-        <div class="forms-placeholder-titre">Formulaire Microsoft Forms</div>
-        <p class="forms-placeholder-texte">
-          Le formulaire Microsoft Forms sera affiché ici une fois l'URL configurée.<br>
-          Remplacez le commentaire HTML par le code d'intégration de votre formulaire.
-        </p>
-        <div class="forms-placeholder-url">
-          https://forms.office.com/Pages/ResponsePage.aspx?id=<strong>VOTRE_ID</strong>&amp;embed=true
-        </div>
+      <div class="placeholder-forms">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="9" y1="21" x2="9" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/>
+        </svg>
+        <div class="placeholder-forms-titre">Formulaire Microsoft Forms</div>
+        <p class="placeholder-forms-texte">Remplacez ce bloc par le code d'intégration de votre formulaire. L'URL d'embed se trouve dans Forms → Partager → Incorporer.</p>
+        <div class="placeholder-forms-code">https://forms.office.com/Pages/ResponsePage.aspx?id=<strong>VOTRE_ID</strong>&amp;embed=true</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // ────────────────────────────────────────────────
-  //  CONFIGURATION
-  // ────────────────────────────────────────────────
+  // ── Config ──────────────────────────────────────
+  // Sur GitHub Pages, remplacer par l'URL raw du fichier :
+  // 'https://raw.githubusercontent.com/ORG/REPO/main/data/assistants.csv'
+  const CSV_URL = 'data/assistants.csv';
 
-  // Pour une utilisation via GitHub Pages, remplacez par l'URL raw GitHub :
-  // 'https://raw.githubusercontent.com/VOTRE_ORG/VOTRE_REPO/main/data/assistants.json'
-  const DATA_URL = 'data/assistants.json';
-
-  // Couleur de tag par catégorie
-  const COULEUR_CAT = {
-    atelier:   'ambre',
-    cadrage:   'cerulean',
-    redaction: 'menthe',
-    dev:       'lavande',
-    analyse:   'ocre',
-    formation: 'bourgogne',
-  };
-
-  // Couleur de tag par plateforme
-  const COULEUR_PLATEFORME = {
-    gpt:     'primaire',
-    claude:  'lavande',
-    mistral: 'neutre',
-  };
-
-  // ────────────────────────────────────────────────
-  //  ÉTAT
-  // ────────────────────────────────────────────────
+  // ── État ────────────────────────────────────────
   let assistants = [];
-  let filtreCategorie = 'all';
-  let filtrePlateforme = 'all';
   let recherche = '';
-  const favoris = new Set(JSON.parse(localStorage.getItem('solstice_favoris') || '[]'));
+  let favorisUniquement = false;
+  const favoris = new Set(JSON.parse(localStorage.getItem('solstice_fav') || '[]'));
 
-  // ────────────────────────────────────────────────
-  //  CHARGEMENT DES DONNÉES
-  // ────────────────────────────────────────────────
-  async function chargerDonnees() {
+  // ── Lecture CSV ─────────────────────────────────
+  function parseCSV(texte) {
+    // Supprime BOM éventuel (Excel UTF-8)
+    texte = texte.replace(/^\uFEFF/, '');
+    const lignes = texte.trim().split(/\r?\n/);
+    const entetes = lignes[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    return lignes.slice(1).map(ligne => {
+      const champs = [];
+      let courant = '';
+      let dansGuillements = false;
+      for (let i = 0; i < ligne.length; i++) {
+        const c = ligne[i];
+        if (c === '"') {
+          dansGuillements = !dansGuillements;
+        } else if (c === ',' && !dansGuillements) {
+          champs.push(courant.trim());
+          courant = '';
+        } else {
+          courant += c;
+        }
+      }
+      champs.push(courant.trim());
+      const obj = {};
+      entetes.forEach((h, i) => { obj[h] = champs[i] || ''; });
+      return obj;
+    }).filter(r => r.nom);
+  }
+
+  // ── Chargement ──────────────────────────────────
+  async function charger() {
     try {
-      const res = await fetch(DATA_URL);
+      const res = await fetch(CSV_URL + '?v=' + Date.now());
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      assistants = data.assistants || [];
-
-      // Stats sidebar
-      document.getElementById('statTotal').textContent = assistants.length;
-      document.getElementById('statContributeurs').textContent = data.meta?.contributeurs ?? '—';
-      const date = data.meta?.derniere_mise_a_jour
-        ? new Date(data.meta.derniere_mise_a_jour).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' })
-        : '—';
-      document.getElementById('statDate').textContent = date;
-
+      const texte = await res.text();
+      assistants = parseCSV(texte);
     } catch (e) {
-      console.warn('Impossible de charger data/assistants.json, données de secours utilisées.', e);
-      assistants = DONNEES_SECOURS;
+      console.warn('CSV inaccessible, données de secours.', e);
+      assistants = SECOURS;
     }
+
+    document.getElementById('statTotal').textContent = assistants.length;
+    const now = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    document.getElementById('statDate').textContent = now;
     afficher();
   }
 
-  // ────────────────────────────────────────────────
-  //  AFFICHAGE
-  // ────────────────────────────────────────────────
+  // ── Placeholder image (initiales) ───────────────
+  function imgPlaceholder(nom) {
+    const ini = nom.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+    // Palette de bleus SNCF
+    const palettes = [
+      { bg: '#001b44', fg: '#ffffff' },
+      { bg: '#0a2d6e', fg: '#ffffff' },
+      { bg: '#0070b8', fg: '#ffffff' },
+      { bg: '#004f8c', fg: '#ffffff' },
+    ];
+    const p = palettes[nom.charCodeAt(0) % palettes.length];
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+      <rect width="52" height="52" rx="12" fill="${p.bg}"/>
+      <text x="26" y="34" font-family="'Avenir','Segoe UI',sans-serif" font-size="19" font-weight="700"
+        fill="${p.fg}" text-anchor="middle" dominant-baseline="auto">${ini}</text>
+    </svg>`;
+    return 'data:image/svg+xml,' + encodeURIComponent(svg);
+  }
+
+  // ── Rendu ────────────────────────────────────────
   function afficher() {
     const grille = document.getElementById('grille');
     grille.innerHTML = '';
 
-    // Filtrage
-    const visibles = assistants.filter(a => {
-      const matchCat  = filtreCategorie === 'all' || a.categorie === filtreCategorie;
-      const matchPlat = filtrePlateforme === 'all' || a.plateforme === filtrePlateforme;
-      const matchRech = recherche === '' ||
+    const filtres = assistants.filter(a => {
+      if (favorisUniquement && !favoris.has(cle(a))) return false;
+      if (!recherche) return true;
+      return (
         a.nom.toLowerCase().includes(recherche) ||
         a.description.toLowerCase().includes(recherche) ||
-        (a.tags || []).some(t => t.toLowerCase().includes(recherche));
-      return matchCat && matchPlat && matchRech;
+        (a.contact || '').toLowerCase().includes(recherche)
+      );
     });
 
-    // Nombre affiché
-    const cats = new Set(visibles.map(a => a.categorie));
-    document.getElementById('compteAssistants').textContent =
-      `${visibles.length} assistant${visibles.length > 1 ? 's' : ''} · ${cats.size} catégorie${cats.size > 1 ? 's' : ''}`;
+    document.getElementById('compte').textContent =
+      `${filtres.length} assistant${filtres.length > 1 ? 's' : ''}`;
 
-    if (visibles.length === 0) {
+    if (filtres.length === 0) {
       grille.innerHTML = `
-        <div class="grille-vide apparition visible">
-          <div class="grille-vide-icon">🔍</div>
-          <div class="grille-vide-titre">Aucun assistant trouvé</div>
-          <div class="grille-vide-sous">Essayez d'autres filtres ou termes de recherche.</div>
+        <div class="vide">
+          <svg class="vide-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <div class="vide-titre">Aucun assistant trouvé</div>
+          <div class="vide-sous">Essayez d'autres termes de recherche.</div>
         </div>`;
       return;
     }
 
-    // Carte vedette en premier
-    const vedette = filtreCategorie === 'all' && filtrePlateforme === 'all' && recherche === ''
-      ? visibles.find(a => a.vedette)
-      : null;
-
-    if (vedette) {
-      grille.appendChild(creerCarteVedette(vedette));
-    }
-
-    // Cartes normales
-    visibles.filter(a => !a.vedette || vedette === null).forEach((a, i) => {
-      const carte = creerCarte(a);
-      carte.style.transitionDelay = `${i * 50}ms`;
+    filtres.forEach((a, i) => {
+      const carte = creerCarte(a, i);
       grille.appendChild(carte);
     });
 
-    // Déclenchement animations
     requestAnimationFrame(() => {
-      grille.querySelectorAll('.apparition').forEach(el => {
-        requestAnimationFrame(() => el.classList.add('visible'));
+      grille.querySelectorAll('.app').forEach((el, i) => {
+        setTimeout(() => el.classList.add('v'), i * 45);
       });
     });
   }
 
-  // ────────────────────────────────────────────────
-  //  CRÉATION D'UNE CARTE NORMALE
-  // ────────────────────────────────────────────────
-  function creerCarte(a) {
-    const div = document.createElement('div');
-    div.className = 'carte-assistant apparition';
-    div.dataset.id = a.id;
+  function cle(a) { return a.nom; }
 
-    const estFavori = favoris.has(a.id);
-    const couleurPrincipale = a.couleur || COULEUR_CAT[a.categorie] || 'cerulean';
+  // ── Création carte ───────────────────────────────
+  function creerCarte(a, i) {
+    const estFavori = favoris.has(cle(a));
+    const imgSrc = a.image ? `img/${a.image}` : imgPlaceholder(a.nom);
 
-    div.innerHTML = `
-      <div class="carte-ligne-haute">
-        <div class="carte-icone ${couleurPrincipale}">${a.icone || '🤖'}</div>
-        <div class="carte-actions">
-          <button class="btn-etoile ${estFavori ? 'favori' : ''}" data-id="${a.id}" title="${estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
-            ${estFavori ? '★' : '☆'}
-          </button>
-          <button class="btn-menu-carte" title="Options">⋮</button>
-        </div>
+    const carte = document.createElement('div');
+    carte.className = 'carte app';
+    carte.setAttribute('role', 'article');
+    carte.style.transitionDelay = `${i * 40}ms`;
+
+    carte.innerHTML = `
+      <div class="carte-top">
+        <img class="carte-img" src="${imgSrc}" alt="${a.nom}"
+          onerror="this.src='${imgPlaceholder(a.nom)}'">
+        <button class="btn-star ${estFavori ? 'favori' : ''}" aria-label="${estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}" title="${estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="${estFavori ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </button>
       </div>
       <div class="carte-nom">${a.nom}</div>
-      <p class="carte-description">${a.description}</p>
-      <div class="carte-tags">
-        ${(a.tags || []).map((tag, idx) => {
-          const couleurTag = idx === 0 ? COULEUR_CAT[a.categorie] || 'neutre' : COULEUR_PLATEFORME[a.plateforme] || 'neutre';
-          return `<span class="tag ${couleurTag}">${tag}</span>`;
-        }).join('')}
+      <p class="carte-desc">${a.description}</p>
+      <div class="carte-pied">
+        <div class="carte-contact">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          <span>${a.contact || '—'}</span>
+        </div>
+        ${a.lien ? `<a class="btn-ouvrir" href="${a.lien}" target="_blank" rel="noopener" aria-label="Ouvrir ${a.nom}">
+          Ouvrir
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>` : ''}
       </div>`;
 
     // Étoile
-    div.querySelector('.btn-etoile').addEventListener('click', e => {
+    carte.querySelector('.btn-star').addEventListener('click', e => {
+      e.preventDefault();
       e.stopPropagation();
-      toggleFavori(a.id, e.currentTarget);
+      const btn = e.currentTarget;
+      const svg = btn.querySelector('svg');
+      if (favoris.has(cle(a))) {
+        favoris.delete(cle(a));
+        btn.classList.remove('favori');
+        svg.setAttribute('fill', 'none');
+        btn.setAttribute('aria-label', 'Ajouter aux favoris');
+      } else {
+        favoris.add(cle(a));
+        btn.classList.add('favori');
+        svg.setAttribute('fill', 'currentColor');
+        btn.setAttribute('aria-label', 'Retirer des favoris');
+      }
+      localStorage.setItem('solstice_fav', JSON.stringify([...favoris]));
+      if (favorisUniquement) afficher();
     });
 
-    // Clic carte → ouvrir l'assistant
-    div.addEventListener('click', e => {
-      if (e.target.closest('.btn-etoile, .btn-menu-carte')) return;
-      if (a.url && a.url !== '#') window.open(a.url, '_blank');
+    // Clic carte → ouvrir (si pas sur un bouton)
+    carte.addEventListener('click', e => {
+      if (e.target.closest('.btn-star, .btn-ouvrir')) return;
+      if (a.lien) window.open(a.lien, '_blank', 'noopener');
     });
 
-    return div;
+    return carte;
   }
 
-  // ────────────────────────────────────────────────
-  //  CRÉATION DE LA CARTE VEDETTE
-  // ────────────────────────────────────────────────
-  function creerCarteVedette(a) {
-    const div = document.createElement('div');
-    div.className = 'carte-featured apparition';
-    div.innerHTML = `
-      <div class="featured-content">
-        <div class="featured-eyebrow">Assistant vedette</div>
-        <div class="featured-nom">${a.nom}</div>
-        <p class="featured-description">${a.description}</p>
-        <div class="featured-action">
-          <button class="btn-featured">Ouvrir l'assistant</button>
-        </div>
-      </div>
-      <div class="featured-visual">
-        <div class="featured-illustration">
-          <svg class="sun-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60" cy="60" r="28" fill="#eed484" opacity="0.9"/>
-            <circle cx="60" cy="60" r="22" fill="#eed484"/>
-            <g opacity="0.3">
-              <line x1="60" y1="8" x2="60" y2="24" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="60" y1="96" x2="60" y2="112" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="8" y1="60" x2="24" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="96" y1="60" x2="112" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="23.2" y1="23.2" x2="34.5" y2="34.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="85.5" y1="85.5" x2="96.8" y2="96.8" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="23.2" y1="96.8" x2="34.5" y2="85.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-              <line x1="85.5" y1="34.5" x2="96.8" y2="23.2" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-            </g>
-          </svg>
-          <div class="orbit orbit-1"><span class="orbit-dot c1"></span></div>
-          <div class="orbit orbit-2">
-            <span class="orbit-dot c3"></span>
-            <span class="orbit-dot c4"></span>
-          </div>
-        </div>
-      </div>`;
-
-    div.querySelector('.btn-featured').addEventListener('click', e => {
-      e.stopPropagation();
-      if (a.url && a.url !== '#') window.open(a.url, '_blank');
-    });
-    div.addEventListener('click', () => {
-      if (a.url && a.url !== '#') window.open(a.url, '_blank');
-    });
-
-    return div;
-  }
-
-  // ────────────────────────────────────────────────
-  //  FAVORIS
-  // ────────────────────────────────────────────────
-  function toggleFavori(id, btn) {
-    if (favoris.has(id)) {
-      favoris.delete(id);
-      btn.textContent = '☆';
-      btn.classList.remove('favori');
-      btn.title = 'Ajouter aux favoris';
-    } else {
-      favoris.add(id);
-      btn.textContent = '★';
-      btn.classList.add('favori');
-      btn.title = 'Retirer des favoris';
-    }
-    localStorage.setItem('solstice_favoris', JSON.stringify([...favoris]));
-  }
-
-  // ────────────────────────────────────────────────
-  //  FILTRES & RECHERCHE
-  // ────────────────────────────────────────────────
-  document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip[data-filter]').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      filtreCategorie = chip.dataset.filter;
-      afficher();
-    });
-  });
-
-  document.querySelectorAll('.filter-chip[data-filter-platform]').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip[data-filter-platform]').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      filtrePlateforme = chip.dataset.filterPlatform;
-      afficher();
-    });
-  });
-
-  document.getElementById('searchInput').addEventListener('input', e => {
+  // ── Filtres ──────────────────────────────────────
+  document.getElementById('recherche').addEventListener('input', e => {
     recherche = e.target.value.toLowerCase().trim();
     afficher();
   });
 
-  // ────────────────────────────────────────────────
-  //  PANNEAU FORMS
-  // ────────────────────────────────────────────────
-  const panneauOverlay = document.getElementById('panneauOverlay');
+  document.getElementById('toggleFavoris').addEventListener('click', e => {
+    favorisUniquement = !favorisUniquement;
+    e.currentTarget.classList.toggle('actif', favorisUniquement);
+    afficher();
+  });
+
+  // ── Panneau Forms ────────────────────────────────
+  const overlay = document.getElementById('overlay');
 
   document.getElementById('btnProposer').addEventListener('click', () => {
-    panneauOverlay.classList.add('ouvert');
+    overlay.classList.add('ouvert');
     document.body.style.overflow = 'hidden';
   });
 
-  document.getElementById('btnFermer').addEventListener('click', fermerPanneau);
-
-  panneauOverlay.addEventListener('click', e => {
-    if (e.target === panneauOverlay) fermerPanneau();
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') fermerPanneau();
-  });
-
-  function fermerPanneau() {
-    panneauOverlay.classList.remove('ouvert');
+  function fermer() {
+    overlay.classList.remove('ouvert');
     document.body.style.overflow = '';
   }
 
-  // ────────────────────────────────────────────────
-  //  DONNÉES DE SECOURS (si JSON inaccessible)
-  // ────────────────────────────────────────────────
-  const DONNEES_SECOURS = [
-    { id:'aurore',   nom:'Aurore',    description:'Cadrage rapide de projet IA en 15 minutes. Pose les bonnes questions, structure la fiche projet et identifie les risques clés.', categorie:'cadrage',   plateforme:'gpt',     icone:'⚡', couleur:'cerulean', auteur:'Fabien', tags:['Cadrage','GPT-4o'],   vedette:false },
-    { id:'eclipse',  nom:'Éclipse',   description:'Rédaction et reformulation de contenus métier : notes de synthèse, mails exécutifs, communications internes.',                    categorie:'redaction', plateforme:'claude',  icone:'✏', couleur:'menthe',   auteur:'Marie',  tags:['Rédaction','Claude'],  vedette:false },
-    { id:'zenith',   nom:'Zénith',    description:'Analyse de données et génération de tableaux de bord. Connectez un CSV et obtenez une synthèse visuelle en 30 secondes.',           categorie:'analyse',   plateforme:'claude',  icone:'📊', couleur:'ocre',     auteur:'Thomas', tags:['Analyse','Claude'],    vedette:false },
-    { id:'equinoxe', nom:'Équinoxe',  description:'Revue de code, refactoring et génération de tests. Spécialisé Python et TypeScript avec les conventions SNCF.',                    categorie:'dev',       plateforme:'mistral', icone:'⟨/⟩', couleur:'lavande',  auteur:'Julien', tags:['Dev & Tech','Mistral'], vedette:false },
-    { id:'halo',     nom:'Halo',      description:'Création de parcours de formation IA sur mesure. Génère les modules, les quiz et les fiches récapitulatives.',                      categorie:'formation', plateforme:'gpt',     icone:'🎓', couleur:'bourgogne', auteur:'Sophie', tags:['Formation','GPT-4o'],  vedette:false },
-    { id:'lumiere',  nom:'Lumière',   description:'Cartographie des cas d\'usage IA d\'une direction. Identifie les quick wins, estime le ROI et propose une feuille de route.',       categorie:'cadrage',   plateforme:'claude',  icone:'🧭', couleur:'cerulean', auteur:'Anne',   tags:['Cadrage','Claude'],    vedette:false },
-    { id:'rayon',    nom:'Rayon',     description:'Génère les comptes-rendus de réunion à partir d\'une transcription ou de notes brutes. Identifie les actions et les décisions.',   categorie:'redaction', plateforme:'gpt',     icone:'📋', couleur:'menthe',   auteur:'Fabien', tags:['Rédaction','GPT-4o'],  vedette:false },
+  document.getElementById('btnFermer').addEventListener('click', fermer);
+  overlay.addEventListener('click', e => { if (e.target === overlay) fermer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') fermer(); });
+
+  // ── Données de secours ───────────────────────────
+  const SECOURS = [
+    { nom: 'Aurore',    description: 'Cadrage rapide de projet IA en 15 minutes. Pose les bonnes questions, structure la fiche projet et identifie les risques clés.', lien: '#', contact: 'Fabien Martin',   image: '' },
+    { nom: 'Éclipse',  description: 'Rédaction et reformulation de contenus métier : notes de synthèse, mails exécutifs, communications internes.',                    lien: '#', contact: 'Marie Dupont',    image: '' },
+    { nom: 'Zénith',   description: 'Analyse de données et génération de tableaux de bord. Connectez un CSV et obtenez une synthèse visuelle en 30 secondes.',           lien: '#', contact: 'Thomas Bernard',  image: '' },
+    { nom: 'Équinoxe', description: 'Revue de code, refactoring et génération de tests. Spécialisé Python et TypeScript avec les conventions SNCF.',                    lien: '#', contact: 'Julien Moreau',   image: '' },
+    { nom: 'Halo',     description: 'Création de parcours de formation IA sur mesure. Génère les modules, les quiz et les fiches récapitulatives.',                      lien: '#', contact: 'Sophie Laurent',  image: '' },
   ];
 
-  // ────────────────────────────────────────────────
-  //  INIT
-  // ────────────────────────────────────────────────
-  chargerDonnees();
+  // ── Init ─────────────────────────────────────────
+  charger();
 </script>
 
 </body>

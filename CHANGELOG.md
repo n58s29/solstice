@@ -5,40 +5,56 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [0.3.0] — 2026-04-15
+
+### Ajouté
+- **Dossier `img/`** : images par assistant (PNG/JPG), avec fallback automatique sur un placeholder initiales + fond bleu marine si le fichier est absent
+- **Toggle "Mes favoris"** dans la sidebar pour n'afficher que les assistants étoilés
+
+### Modifié
+- **Base de données CSV** : `data/assistants.json` remplacé par `data/assistants.csv` — plus simple à éditer dans Excel ou un éditeur texte
+- **Schéma des données simplifié** : 5 champs uniquement — `nom`, `description`, `lien`, `contact`, `image`. Suppression des catégories, plateformes, runs et couleurs (tous les assistants sont sur Groupe SNCF GPT)
+- **Images à la place des emojis** : les cartes affichent désormais une image illustrant l'assistant plutôt qu'un caractère emoji
+- **Sidebar épurée** : suppression des filtres catégorie et plateforme, remplacés par le toggle favoris
+- **Note panneau Forms** mise à jour pour refléter le processus manuel (mise à jour du CSV après réception des réponses)
+
+### Supprimé
+- Carte vedette (featured/hero card)
+- Filtres par catégorie et par plateforme
+- Emojis comme icônes de carte
+- `data/assistants.json`
+
+---
+
 ## [0.2.0] — 2026-04-15
 
 ### Ajouté
-- **Panneau "Proposer un assistant"** : bouton `+` dans le header ouvrant un panneau latéral coulissant prêt à accueillir un formulaire Microsoft Forms en iframe
-- **Base de données JSON** : fichier `data/assistants.json` externalisant toutes les données — rechargé dynamiquement à chaque visite, versionnable sur GitHub
-- **Favoris persistants** : étoile ☆/★ sur chaque carte, mémorisée dans le localStorage du navigateur
-- **Données de secours** : si `assistants.json` est inaccessible (ouverture locale sans serveur), les données sont chargées depuis un tableau JS intégré
+- Panneau "Proposer un assistant" (bouton `+` → panneau latéral coulissant avec iframe Microsoft Forms)
+- `data/assistants.json` comme base de données chargée dynamiquement
+- Favoris persistants via localStorage (étoile ☆/★ sur chaque carte)
+- Données de secours intégrées si le fichier JSON est inaccessible
 
 ### Modifié
-- **Redesign des cartes** : nouvelle structure visuelle inspirée de Groupe SNCF GPT — icône en haut à gauche (fond coloré), étoile + menu ⋮ en haut à droite, tags colorés par catégorie, coins arrondis à 16 px
-- **Rendu dynamique** : les cartes sont désormais générées par JavaScript depuis les données JSON, plus de HTML statique pour chaque assistant
-- **Palette de couleurs** : tons plus doux et contrastés, chaque catégorie dispose d'une couleur de fond claire et d'une couleur de texte assortie
-- **Sidebar** : fond blanc, bordure droite, champ de recherche avec icône loupe et bordure arrondie
-- **Filtres** : chips avec bordure et état actif plus marqué
-- **Stats sidebar** : alimentées dynamiquement depuis `data/assistants.json`
+- Redesign des cartes : style Groupe SNCF GPT — icône en haut à gauche, étoile + menu en haut à droite, tags colorés par catégorie, coins arrondis à 16 px
+- Rendu dynamique des cartes depuis les données (fin du HTML statique)
+- Sidebar : fond blanc, champ de recherche avec icône loupe, chips avec bordure
 
 ### Supprimé
-- Barre d'accent colorée en haut de chaque carte (remplacée par l'icône colorée)
-- Carte "Nouvelle" statique en bas de grille (remplacée par le bouton `+` dans le header)
-- HTML statique des cartes individuelles
+- Barre d'accent colorée en haut de carte
+- Carte "Nouvelle" statique en bas de grille
 
 ---
 
 ## [0.1.0] — 2026-04-15
 
 ### Ajouté
-- **Structure initiale** : application monopage (`index.html`) avec layout sidebar 1/3 + contenu 2/3
-- **8 assistants** : Sunshine (vedette), Aurore, Éclipse, Zénith, Équinoxe, Halo, Lumière, Rayon
-- **Carte vedette** (hero) : Sunshine en pleine largeur avec illustration animée et orbites
-- **Filtres** par catégorie (6) et par plateforme (3)
-- **Recherche plein texte** en temps réel
-- **Animations d'apparition** au scroll via IntersectionObserver
-- **Responsive** : layout colonne unique sous 860 px
-- **Palette SNCF** : bleu marine primaire, cerulean, menthe, lavande, ambre, ocre, bourgogne
+- Structure initiale : layout sidebar 1/3 + contenu 2/3
+- 8 assistants en HTML statique : Sunshine (vedette), Aurore, Éclipse, Zénith, Équinoxe, Halo, Lumière, Rayon
+- Carte vedette hero pleine largeur avec illustration animée
+- Filtres catégorie (6) et plateforme (3)
+- Recherche plein texte en temps réel
+- Animations d'apparition au scroll via IntersectionObserver
+- Responsive mobile (colonne unique sous 860 px)
 
 ---
 
