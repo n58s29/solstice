@@ -10,24 +10,30 @@
       --primaire-conteneur: #123062;
       --sur-primaire: #ffffff;
       --sur-primaire-conteneur: #d1e0f0;
-      --surface: #f7f9ff;
-      --surface-basse: #f1f4fa;
-      --surface-haute: #dfe3e8;
+      --surface: #f0f2f8;
+      --surface-basse: #e8eaf2;
+      --surface-haute: #d8dae8;
       --surface-flottante: #ffffff;
       --sur-surface: #181c20;
-      --sur-surface-secondaire: #44474e;
+      --sur-surface-secondaire: #5a5f6e;
       --cerulean: #0088cc;
-      --ambre: #eed484;
-      --menthe: #00b388;
-      --lavande: #8374d1;
-      --ocre: #dc582a;
-      --bourgogne: #651c32;
-      --bleu-horizon: #a4c8e1;
-      --succes-fond: #d3e9e5;
-      --ombre-ambiante: rgba(0, 26, 66, 0.06);
-      --bordure-fantome: rgba(116, 119, 128, 0.15);
-      --police-display: 'Avenir', 'Avenir Next', sans-serif;
-      --police-corps: 'Avenir', 'Avenir Next', Arial, sans-serif;
+      --cerulean-bg: #e6f4fb;
+      --ambre: #c4900d;
+      --ambre-bg: #fdf3dc;
+      --menthe: #007a5e;
+      --menthe-bg: #e0f4ef;
+      --lavande: #5c4ec4;
+      --lavande-bg: #eeecfa;
+      --ocre: #c04a1a;
+      --ocre-bg: #fdeee8;
+      --bourgogne: #7a1e30;
+      --bourgogne-bg: #f5e8eb;
+      --ombre: rgba(0, 26, 66, 0.08);
+      --ombre-hover: rgba(0, 26, 66, 0.14);
+      --bordure: rgba(0, 26, 66, 0.08);
+      --police-display: 'Avenir', 'Avenir Next', 'Segoe UI', sans-serif;
+      --police-corps: 'Avenir', 'Avenir Next', 'Segoe UI', Arial, sans-serif;
+      --rayon-carte: 16px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -37,19 +43,19 @@
       font-weight: 300;
       line-height: 1.65;
     }
-    h1, h2 { font-family: var(--police-display); font-weight: 500; letter-spacing: -0.02em; color: var(--primaire); }
-    h3 { font-family: var(--police-corps); font-weight: 400; }
+    h1, h2 { font-family: var(--police-display); font-weight: 600; letter-spacing: -0.02em; color: var(--primaire); }
 
-    /* === LAYOUT 1/3 + 2/3 === */
+    /* === LAYOUT === */
     .layout-app {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 300px 1fr;
       min-height: 100vh;
     }
 
     /* === SIDEBAR === */
     .sidebar {
-      background: var(--surface-basse);
+      background: var(--surface-flottante);
+      border-right: 1px solid var(--bordure);
       padding: 2rem 1.5rem;
       position: sticky;
       top: 0;
@@ -58,19 +64,17 @@
       display: flex;
       flex-direction: column;
     }
-    .sidebar-brand {
-      margin-bottom: 2.5rem;
-    }
+    .sidebar-brand { margin-bottom: 2rem; }
     .eyebrow {
-      font-family: var(--police-corps);
-      font-weight: 500;
       font-size: 11px;
+      font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--cerulean);
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 0.75rem;
     }
     .point-vivant {
       width: 6px; height: 6px;
@@ -79,499 +83,455 @@
       display: inline-block;
       animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
     .sidebar-title {
-      font-family: var(--police-display);
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      font-weight: 500;
-      letter-spacing: -0.02em;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 700;
       color: var(--primaire);
       line-height: 1.15;
-      margin-top: 0.75rem;
     }
     .sidebar-subtitle {
-      font-size: 0.875rem;
-      font-weight: 300;
+      font-size: 0.8125rem;
+      font-weight: 400;
       color: var(--sur-surface-secondaire);
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
       line-height: 1.5;
     }
 
-    /* Sidebar search */
-    .sidebar-search {
-      margin-bottom: 2rem;
+    /* Search */
+    .sidebar-search { margin-bottom: 1.75rem; position: relative; }
+    .search-icon {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--sur-surface-secondaire);
+      font-size: 14px;
+      pointer-events: none;
     }
     .champ {
-      background: var(--surface-haute);
-      border: none;
-      border-bottom: 2px solid transparent;
-      border-radius: 0.25rem 0.25rem 0 0;
-      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1.5px solid var(--surface-haute);
+      border-radius: 10px;
+      padding: 0.65rem 1rem 0.65rem 2.25rem;
       font-family: var(--police-corps);
       font-size: 0.875rem;
       font-weight: 400;
       color: var(--sur-surface);
-      transition: background 0.2s, border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       width: 100%;
     }
     .champ:focus {
-      background: var(--surface-flottante);
-      border-bottom-color: var(--primaire);
+      border-color: var(--cerulean);
+      box-shadow: 0 0 0 3px rgba(0,136,204,0.12);
       outline: none;
     }
-    .champ::placeholder {
-      color: var(--sur-surface-secondaire);
-      font-weight: 300;
-    }
+    .champ::placeholder { color: var(--sur-surface-secondaire); }
 
-    /* Sidebar filters */
+    /* Filters */
     .sidebar-section-label {
-      font-family: var(--police-corps);
-      font-weight: 500;
       font-size: 11px;
+      font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--sur-surface-secondaire);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.6rem;
     }
-    .filter-group {
-      margin-bottom: 1.75rem;
-    }
+    .filter-group { margin-bottom: 1.5rem; }
     .filter-chip {
       display: inline-block;
-      padding: 0.35rem 0.85rem;
-      font-family: var(--police-corps);
+      padding: 0.3rem 0.75rem;
       font-size: 0.8125rem;
       font-weight: 400;
       color: var(--sur-surface-secondaire);
       background: var(--surface);
-      border-radius: 2rem;
+      border-radius: 20px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      margin: 0 0.35rem 0.4rem 0;
+      transition: all 0.15s;
+      margin: 0 0.3rem 0.35rem 0;
       user-select: none;
+      border: 1.5px solid transparent;
     }
-    .filter-chip:hover {
-      background: var(--surface-haute);
-      color: var(--sur-surface);
-    }
-    .filter-chip.active {
-      background: var(--primaire);
-      color: var(--sur-primaire);
-    }
-    .filter-chip.active[data-color="cerulean"] { background: var(--cerulean); }
-    .filter-chip.active[data-color="menthe"] { background: var(--menthe); }
-    .filter-chip.active[data-color="lavande"] { background: var(--lavande); }
-    .filter-chip.active[data-color="ambre"] { background: #c4a94d; color: var(--primaire); }
-    .filter-chip.active[data-color="ocre"] { background: var(--ocre); }
-    .filter-chip.active[data-color="bourgogne"] { background: var(--bourgogne); }
+    .filter-chip:hover { background: var(--surface-haute); color: var(--sur-surface); }
+    .filter-chip.active { background: var(--primaire); color: #fff; border-color: var(--primaire); font-weight: 500; }
+    .filter-chip.active[data-color="cerulean"] { background: var(--cerulean); border-color: var(--cerulean); }
+    .filter-chip.active[data-color="menthe"] { background: var(--menthe); border-color: var(--menthe); }
+    .filter-chip.active[data-color="lavande"] { background: var(--lavande); border-color: var(--lavande); }
+    .filter-chip.active[data-color="ambre"] { background: var(--ambre); border-color: var(--ambre); }
+    .filter-chip.active[data-color="ocre"] { background: var(--ocre); border-color: var(--ocre); }
+    .filter-chip.active[data-color="bourgogne"] { background: var(--bourgogne); border-color: var(--bourgogne); }
 
-    /* Sidebar stats */
-    .sidebar-stats {
-      margin-top: auto;
-      padding-top: 1.5rem;
-    }
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-    }
-    .stat-label {
-      font-size: 0.8125rem;
-      font-weight: 300;
-      color: var(--sur-surface-secondaire);
-    }
-    .stat-value {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--primaire);
-    }
+    /* Stats */
+    .sidebar-stats { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--bordure); }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; }
+    .stat-label { font-size: 0.8125rem; color: var(--sur-surface-secondaire); }
+    .stat-value { font-size: 0.875rem; font-weight: 600; color: var(--primaire); }
 
-    /* === MAIN CONTENT === */
-    .contenu-principal {
-      padding: 2.5rem;
-      background: var(--surface);
-      min-height: 100vh;
-    }
+    /* === MAIN === */
+    .contenu-principal { padding: 2rem 2rem 2rem; background: var(--surface); min-height: 100vh; }
 
-    /* Header bar */
     .content-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 2rem;
+      align-items: center;
+      margin-bottom: 1.75rem;
     }
-    .content-header h2 {
-      font-size: clamp(1.3rem, 2vw, 1.8rem);
-      line-height: 1.2;
-    }
-    .content-header-count {
-      font-size: 0.875rem;
-      font-weight: 300;
-      color: var(--sur-surface-secondaire);
-    }
-    .view-toggle {
+    .content-header h2 { font-size: 1.375rem; }
+    .content-header-count { font-size: 0.8125rem; color: var(--sur-surface-secondaire); margin-top: 0.15rem; }
+
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+    /* Bouton Proposer */
+    .btn-proposer {
       display: flex;
-      gap: 0;
-    }
-    .view-btn {
-      background: var(--surface-basse);
-      border: none;
-      padding: 0.5rem 0.85rem;
-      cursor: pointer;
-      color: var(--sur-surface-secondaire);
-      font-size: 0.8125rem;
-      font-weight: 400;
-      transition: background 0.2s, color 0.2s;
-    }
-    .view-btn:first-child { border-radius: 0.25rem 0 0 0.25rem; }
-    .view-btn:last-child { border-radius: 0 0.25rem 0.25rem 0; }
-    .view-btn.active {
+      align-items: center;
+      gap: 0.5rem;
       background: var(--primaire);
-      color: var(--sur-primaire);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.55rem 1.1rem;
+      font-family: var(--police-corps);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0,27,68,0.18);
+    }
+    .btn-proposer:hover { background: var(--primaire-conteneur); box-shadow: 0 4px 16px rgba(0,27,68,0.22); }
+    .btn-proposer:active { transform: scale(0.97); }
+    .btn-proposer-plus {
+      font-size: 1.25rem;
+      font-weight: 300;
+      line-height: 1;
     }
 
-    /* === CARDS GRID === */
+    /* === GRILLE === */
     .grille-assistants {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.1rem;
     }
 
-    /* === ASSISTANT CARD === */
+    /* === CARTE ASSISTANT (style Groupe SNCF GPT) === */
     .carte-assistant {
       background: var(--surface-flottante);
-      border-radius: 0.25rem;
-      padding: 0;
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      border-radius: var(--rayon-carte);
+      padding: 1.25rem;
+      border: 1px solid var(--bordure);
+      box-shadow: 0 1px 4px var(--ombre);
+      transition: box-shadow 0.2s, transform 0.2s;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
     }
     .carte-assistant:hover {
+      box-shadow: 0 8px 28px var(--ombre-hover);
       transform: translateY(-2px);
-      box-shadow: 0 12px 40px var(--ombre-ambiante);
     }
-    .carte-top-accent {
-      height: 3px;
-      width: 100%;
-    }
-    .carte-top-accent.cerulean { background: var(--cerulean); }
-    .carte-top-accent.menthe { background: var(--menthe); }
-    .carte-top-accent.lavande { background: var(--lavande); }
-    .carte-top-accent.ambre { background: var(--ambre); }
-    .carte-top-accent.ocre { background: var(--ocre); }
-    .carte-top-accent.bourgogne { background: var(--bourgogne); }
 
-    .carte-body {
-      padding: 1.5rem;
-      flex: 1;
+    /* Ligne haute : icône + actions */
+    .carte-ligne-haute {
       display: flex;
-      flex-direction: column;
-    }
-    .carte-header {
-      display: flex;
+      justify-content: space-between;
       align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1rem;
     }
     .carte-icone {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
+      width: 48px; height: 48px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      font-size: 1.4rem;
       flex-shrink: 0;
     }
-    .carte-icone.cerulean { background: rgba(0, 136, 204, 0.12); }
-    .carte-icone.menthe { background: rgba(0, 179, 136, 0.12); }
-    .carte-icone.lavande { background: rgba(131, 116, 209, 0.12); }
-    .carte-icone.ambre { background: rgba(238, 212, 132, 0.15); }
-    .carte-icone.ocre { background: rgba(220, 88, 42, 0.12); }
-    .carte-icone.bourgogne { background: rgba(101, 28, 50, 0.12); }
+    .carte-icone.cerulean  { background: var(--cerulean-bg); }
+    .carte-icone.menthe    { background: var(--menthe-bg); }
+    .carte-icone.lavande   { background: var(--lavande-bg); }
+    .carte-icone.ambre     { background: var(--ambre-bg); }
+    .carte-icone.ocre      { background: var(--ocre-bg); }
+    .carte-icone.bourgogne { background: var(--bourgogne-bg); }
 
-    .carte-titre-zone {
-      flex: 1;
-      min-width: 0;
+    .carte-actions { display: flex; gap: 0.25rem; }
+    .btn-etoile, .btn-menu-carte {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.05rem;
+      color: var(--sur-surface-secondaire);
+      padding: 0.2rem 0.3rem;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+      line-height: 1;
     }
+    .btn-etoile:hover { background: var(--ambre-bg); color: var(--ambre); }
+    .btn-etoile.favori { color: #f0a500; }
+    .btn-menu-carte:hover { background: var(--surface); }
+
+    /* Contenu */
     .carte-nom {
       font-family: var(--police-display);
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: 1rem;
+      font-weight: 700;
       color: var(--primaire);
       letter-spacing: -0.01em;
-      line-height: 1.3;
-    }
-    .carte-auteur {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--sur-surface-secondaire);
-      margin-top: 0.15rem;
-      letter-spacing: 0.02em;
+      line-height: 1.25;
     }
     .carte-description {
-      font-size: 0.875rem;
-      font-weight: 300;
+      font-size: 0.8125rem;
+      font-weight: 400;
       color: var(--sur-surface-secondaire);
       line-height: 1.5;
       flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .carte-footer {
+    /* Tags */
+    .carte-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: auto; }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+    .tag.cerulean  { background: var(--cerulean-bg);  color: var(--cerulean); }
+    .tag.menthe    { background: var(--menthe-bg);    color: var(--menthe); }
+    .tag.lavande   { background: var(--lavande-bg);   color: var(--lavande); }
+    .tag.ambre     { background: var(--ambre-bg);     color: var(--ambre); }
+    .tag.ocre      { background: var(--ocre-bg);      color: var(--ocre); }
+    .tag.bourgogne { background: var(--bourgogne-bg); color: var(--bourgogne); }
+    .tag.neutre    { background: var(--surface);      color: var(--sur-surface-secondaire); }
+    .tag.primaire  { background: rgba(0,27,68,0.07);  color: var(--primaire); }
+
+    /* === CARTE FEATURED === */
+    .carte-featured {
+      grid-column: 1 / -1;
+      background: linear-gradient(130deg, var(--primaire) 0%, #1a3a70 100%);
+      border-radius: var(--rayon-carte);
+      padding: 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 1.25rem;
-      padding-top: 1rem;
-      background-image: linear-gradient(to right, var(--surface-haute) 40%, transparent 0%);
-      background-size: 5px 1px;
-      background-repeat: repeat-x;
-      background-position: top;
-    }
-    .carte-tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-    .tag {
-      font-family: var(--police-corps);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 0.2rem 0.55rem;
-      border-radius: 2rem;
-      background: var(--surface-basse);
-      color: var(--sur-surface-secondaire);
-    }
-    .carte-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .meta-item {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: var(--sur-surface-secondaire);
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    .meta-dot {
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--sur-surface-secondaire);
-      opacity: 0.4;
-    }
-
-    /* === FEATURED CARD (first/hero) === */
-    .carte-featured {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: linear-gradient(135deg, var(--primaire) 0%, var(--primaire-conteneur) 100%);
-      border-radius: 0.25rem;
-      overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      transition: box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 4px 20px rgba(0,27,68,0.2);
+      gap: 2rem;
     }
     .carte-featured:hover {
+      box-shadow: 0 12px 40px rgba(0,27,68,0.3);
       transform: translateY(-2px);
-      box-shadow: 0 16px 48px rgba(0, 27, 68, 0.2);
     }
-    .featured-content {
-      padding: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+    .featured-content { flex: 1; }
     .featured-eyebrow {
-      font-family: var(--police-corps);
-      font-weight: 500;
       font-size: 11px;
-      letter-spacing: 0.1em;
+      font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--ambre);
-      margin-bottom: 1rem;
+      color: #f0a500;
+      margin-bottom: 0.75rem;
     }
     .featured-nom {
       font-family: var(--police-display);
       font-size: clamp(1.5rem, 2.5vw, 2rem);
-      font-weight: 500;
-      color: var(--sur-primaire);
+      font-weight: 700;
+      color: #fff;
       letter-spacing: -0.02em;
       line-height: 1.15;
     }
     .featured-description {
-      font-size: 0.9375rem;
-      font-weight: 300;
-      color: var(--sur-primaire-conteneur);
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.75);
       line-height: 1.6;
-      margin-top: 1rem;
-      max-width: 420px;
+      margin-top: 0.75rem;
+      max-width: 400px;
     }
-    .featured-action {
-      margin-top: 1.5rem;
-    }
-    .btn-primaire {
-      background: var(--sur-primaire);
+    .featured-action { margin-top: 1.25rem; }
+    .btn-featured {
+      background: rgba(255,255,255,0.95);
       color: var(--primaire);
       border: none;
-      border-radius: 0.375rem;
-      padding: 0.625rem 1.5rem;
+      border-radius: 10px;
+      padding: 0.55rem 1.25rem;
       font-family: var(--police-corps);
       font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
+      font-weight: 600;
       cursor: pointer;
       transition: background 0.2s, transform 0.15s;
     }
-    .btn-primaire:hover {
-      background: var(--surface-basse);
-    }
-    .btn-primaire:active {
-      transform: scale(0.98);
-    }
+    .btn-featured:hover { background: #fff; }
+    .btn-featured:active { transform: scale(0.97); }
     .featured-visual {
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2.5rem;
-      position: relative;
     }
     .featured-illustration {
-      width: 100%;
-      max-width: 280px;
-      aspect-ratio: 1;
-      background: rgba(255,255,255,0.04);
-      border-radius: 14px;
+      width: 120px; height: 120px;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
-    .sun-icon {
-      width: 120px;
-      height: 120px;
-    }
+    .sun-icon { width: 80px; height: 80px; filter: drop-shadow(0 0 20px rgba(238,212,132,0.5)); }
     .orbit {
       position: absolute;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
     }
-    .orbit-1 { width: 180px; height: 180px; animation: spin 20s linear infinite; }
-    .orbit-2 { width: 240px; height: 240px; animation: spin 30s linear infinite reverse; }
+    .orbit-1 { width: 108px; height: 108px; animation: spin 20s linear infinite; }
+    .orbit-2 { width: 140px; height: 140px; animation: spin 30s linear infinite reverse; }
     .orbit-dot {
       position: absolute;
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       border-radius: 50%;
-      top: -4px; left: 50%; transform: translateX(-50%);
+      top: -3.5px; left: 50%;
+      transform: translateX(-50%);
     }
-    .orbit-dot.c1 { background: var(--cerulean); }
-    .orbit-dot.c2 { background: var(--ambre); }
-    .orbit-dot.c3 { background: var(--menthe); }
-    .orbit-dot.c4 { background: var(--lavande); }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .orbit-dot.c1 { background: #0af; }
+    .orbit-dot.c2 { background: #f0a500; }
+    .orbit-dot.c3 { background: #00c896; top:auto;bottom:-3.5px; }
+    .orbit-dot.c4 { background: #a090f0; top:50%;left:-3.5px;transform:translateY(-50%); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* === VIDE === */
+    .grille-vide {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--sur-surface-secondaire);
+    }
+    .grille-vide-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .grille-vide-titre { font-size: 1rem; font-weight: 500; color: var(--primaire); }
+    .grille-vide-sous { font-size: 0.875rem; margin-top: 0.3rem; }
+
+    /* === FOOTER === */
+    footer {
+      background: var(--surface-flottante);
+      border-top: 1px solid var(--bordure);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-titre { font-size: 0.875rem; font-weight: 600; color: var(--primaire); }
+    .footer-sous { font-size: 0.8125rem; color: var(--sur-surface-secondaire); }
+    .footer-filet {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--cerulean), #f0a500, #00c896);
+      border-radius: 2px;
     }
 
-    /* === EMPTY / NEW CARD === */
-    .carte-nouvelle {
-      background: var(--surface-basse);
-      border-radius: 0.25rem;
-      padding: 1.5rem;
+    /* === MODAL PANNEAU === */
+    .panneau-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,15,40,0.4);
+      z-index: 100;
+      backdrop-filter: blur(2px);
+    }
+    .panneau-overlay.ouvert { display: flex; justify-content: flex-end; }
+    .panneau {
+      background: var(--surface-flottante);
+      width: min(640px, 100vw);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,15,40,0.2);
+      animation: glisser 0.3s ease-out;
+    }
+    @keyframes glisser { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .panneau-entete {
+      padding: 1.5rem 1.75rem;
+      border-bottom: 1px solid var(--bordure);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+    .panneau-titre { font-size: 1.1rem; font-weight: 700; color: var(--primaire); }
+    .panneau-sous {
+      font-size: 0.8125rem;
+      color: var(--sur-surface-secondaire);
+      margin-top: 0.2rem;
+      font-weight: 400;
+    }
+    .btn-fermer {
+      background: var(--surface);
+      border: none;
+      border-radius: 8px;
+      width: 32px; height: 32px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--sur-surface-secondaire);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-fermer:hover { background: var(--surface-haute); }
+    .panneau-info {
+      padding: 1rem 1.75rem;
+      background: var(--cerulean-bg);
+      border-bottom: 1px solid rgba(0,136,204,0.15);
+      font-size: 0.8125rem;
+      color: var(--cerulean);
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+    .panneau-corps { flex: 1; overflow: hidden; position: relative; }
+    .panneau-corps iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .forms-placeholder {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 200px;
-      cursor: pointer;
-      transition: background 0.2s;
-      outline: 1px dashed var(--bordure-fantome);
-    }
-    .carte-nouvelle:hover {
-      background: var(--surface-haute);
-    }
-    .carte-nouvelle-icon {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: var(--surface);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--cerulean);
-      font-size: 1.5rem;
-      font-weight: 300;
-      margin-bottom: 0.75rem;
-    }
-    .carte-nouvelle-text {
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: var(--sur-surface-secondaire);
-    }
-
-    /* === FOOTER === */
-    footer {
-      background: var(--surface-basse);
-      padding: 2rem 2.5rem;
+      height: 100%;
+      padding: 2rem;
       text-align: center;
-    }
-    .footer-titre {
-      font-family: var(--police-display);
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: var(--primaire);
-    }
-    .footer-sous-titre {
-      font-family: var(--police-corps);
-      font-size: 0.8125rem;
-      font-weight: 300;
       color: var(--sur-surface-secondaire);
-      margin-top: 0.5rem;
+      gap: 1rem;
     }
-    .footer-filet {
-      width: 200px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--cerulean), var(--ambre), var(--menthe));
-      margin: 1rem auto 0;
-      border-radius: 1px;
+    .forms-placeholder-icon { font-size: 3rem; opacity: 0.4; }
+    .forms-placeholder-titre { font-size: 1rem; font-weight: 600; color: var(--primaire); }
+    .forms-placeholder-texte { font-size: 0.875rem; line-height: 1.6; max-width: 320px; }
+    .forms-placeholder-url {
+      font-size: 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--surface-haute);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-family: monospace;
+      color: var(--cerulean);
+      word-break: break-all;
+      max-width: 100%;
     }
 
     /* === APPARITION === */
-    .apparition {
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-    }
-    .apparition.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .apparition { opacity: 0; transform: translateY(10px); transition: opacity 0.35s ease-out, transform 0.35s ease-out; }
+    .apparition.visible { opacity: 1; transform: translateY(0); }
 
     /* === RESPONSIVE === */
-    @media (max-width: 900px) {
+    @media (max-width: 860px) {
       .layout-app { grid-template-columns: 1fr; }
-      .sidebar {
-        position: relative;
-        height: auto;
-        min-height: auto;
-      }
-      .contenu-principal { padding: 1.5rem 1.25rem; }
-      .carte-featured {
-        grid-template-columns: 1fr;
-      }
+      .sidebar { position: relative; height: auto; }
+      .contenu-principal { padding: 1.25rem; }
+      .carte-featured { flex-direction: column; }
       .featured-visual { display: none; }
-      .grille-assistants {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
@@ -582,26 +542,27 @@
   <!-- ======== SIDEBAR ======== -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <span class="eyebrow">
+      <div class="eyebrow">
         <span class="point-vivant"></span>
-        SOLSTICE — Bibliothèque d'Assistants
-      </span>
+        Bibliothèque d'Assistants
+      </div>
       <h1 class="sidebar-title">Solstice</h1>
       <p class="sidebar-subtitle">Tous les assistants Groupe SNCF GPT de l'équipe, réunis au même endroit.</p>
     </div>
 
     <div class="sidebar-search">
+      <span class="search-icon">🔍</span>
       <input type="text" class="champ" placeholder="Rechercher un assistant…" id="searchInput">
     </div>
 
     <div class="filter-group">
       <div class="sidebar-section-label">Catégorie</div>
       <span class="filter-chip active" data-filter="all">Tous</span>
-      <span class="filter-chip" data-filter="atelier" data-color="ambre">Ateliers</span>
-      <span class="filter-chip" data-filter="cadrage" data-color="cerulean">Cadrage</span>
+      <span class="filter-chip" data-filter="atelier"   data-color="ambre">Ateliers</span>
+      <span class="filter-chip" data-filter="cadrage"   data-color="cerulean">Cadrage</span>
       <span class="filter-chip" data-filter="redaction" data-color="menthe">Rédaction</span>
-      <span class="filter-chip" data-filter="dev" data-color="lavande">Dev &amp; Tech</span>
-      <span class="filter-chip" data-filter="analyse" data-color="ocre">Analyse</span>
+      <span class="filter-chip" data-filter="dev"       data-color="lavande">Dev &amp; Tech</span>
+      <span class="filter-chip" data-filter="analyse"   data-color="ocre">Analyse</span>
       <span class="filter-chip" data-filter="formation" data-color="bourgogne">Formation</span>
     </div>
 
@@ -616,15 +577,15 @@
     <div class="sidebar-stats">
       <div class="stat-row">
         <span class="stat-label">Assistants publiés</span>
-        <span class="stat-value">12</span>
+        <span class="stat-value" id="statTotal">—</span>
       </div>
       <div class="stat-row">
         <span class="stat-label">Contributeurs</span>
-        <span class="stat-value">6</span>
+        <span class="stat-value" id="statContributeurs">—</span>
       </div>
       <div class="stat-row">
         <span class="stat-label">Dernière mise à jour</span>
-        <span class="stat-value">15 avr. 2026</span>
+        <span class="stat-value" id="statDate">—</span>
       </div>
     </div>
   </aside>
@@ -636,275 +597,376 @@
       <div class="content-header">
         <div>
           <h2>Assistants disponibles</h2>
-          <span class="content-header-count">12 assistants · 6 catégories</span>
+          <div class="content-header-count" id="compteAssistants">Chargement…</div>
         </div>
-        <div class="view-toggle">
-          <button class="view-btn active" title="Grille">◫</button>
-          <button class="view-btn" title="Liste">☰</button>
+        <div class="header-actions">
+          <button class="btn-proposer" id="btnProposer">
+            <span class="btn-proposer-plus">+</span>
+            Proposer un assistant
+          </button>
         </div>
       </div>
 
-      <div class="grille-assistants">
-
-        <!-- FEATURED: SUNSHINE -->
-        <div class="carte-featured apparition" data-category="atelier" data-platform="gpt">
-          <div class="featured-content">
-            <div class="featured-eyebrow">Assistant vedette</div>
-            <div class="featured-nom">Sunshine</div>
-            <p class="featured-description">Prépare vos ateliers IAGEN de A à Z : structure le déroulé, génère les supports, propose les exercices et produit le compte-rendu.</p>
-            <div class="featured-action">
-              <button class="btn-primaire">Ouvrir l'assistant</button>
-            </div>
-          </div>
-          <div class="featured-visual">
-            <div class="featured-illustration">
-              <svg class="sun-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="60" cy="60" r="28" fill="#eed484" opacity="0.9"/>
-                <circle cx="60" cy="60" r="22" fill="#eed484"/>
-                <g opacity="0.3">
-                  <line x1="60" y1="8" x2="60" y2="24" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="60" y1="96" x2="60" y2="112" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="8" y1="60" x2="24" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="96" y1="60" x2="112" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="23.2" y1="23.2" x2="34.5" y2="34.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="85.5" y1="85.5" x2="96.8" y2="96.8" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="23.2" y1="96.8" x2="34.5" y2="85.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                  <line x1="85.5" y1="34.5" x2="96.8" y2="23.2" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
-                </g>
-              </svg>
-              <div class="orbit orbit-1">
-                <span class="orbit-dot c1"></span>
-              </div>
-              <div class="orbit orbit-2">
-                <span class="orbit-dot c2" style="top:auto;bottom:-4px;"></span>
-                <span class="orbit-dot c3" style="top:50%;left:-4px;transform:translateY(-50%);"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Cadrage Express → renommé AURORE -->
-        <div class="carte-assistant apparition" data-category="cadrage" data-platform="gpt">
-          <div class="carte-top-accent cerulean"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone cerulean">⚡</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Aurore</div>
-                <div class="carte-auteur">ex Cadrage Express · par Fabien</div>
-              </div>
-            </div>
-            <p class="carte-description">Cadrage rapide de projet IA en 15 minutes. Pose les bonnes questions, structure la fiche projet et identifie les risques clés.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Cadrage</span>
-                <span class="tag">GPT-4o</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">127 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Éclipse -->
-        <div class="carte-assistant apparition" data-category="redaction" data-platform="gpt">
-          <div class="carte-top-accent menthe"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone menthe">✏</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Éclipse</div>
-                <div class="carte-auteur">par Marie</div>
-              </div>
-            </div>
-            <p class="carte-description">Rédaction et reformulation de contenus métier : notes de synthèse, mails exécutifs, communications internes.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Rédaction</span>
-                <span class="tag">Claude</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">89 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Zénith -->
-        <div class="carte-assistant apparition" data-category="analyse" data-platform="claude">
-          <div class="carte-top-accent ocre"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone ocre">📊</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Zénith</div>
-                <div class="carte-auteur">par Thomas</div>
-              </div>
-            </div>
-            <p class="carte-description">Analyse de données et génération de tableaux de bord. Connectez un CSV et obtenez une synthèse visuelle en 30 secondes.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Analyse</span>
-                <span class="tag">Claude</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">64 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Équinoxe -->
-        <div class="carte-assistant apparition" data-category="dev" data-platform="mistral">
-          <div class="carte-top-accent lavande"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone lavande">⟨/⟩</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Équinoxe</div>
-                <div class="carte-auteur">par Julien</div>
-              </div>
-            </div>
-            <p class="carte-description">Revue de code, refactoring et génération de tests. Spécialisé Python et TypeScript avec les conventions SNCF.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Dev</span>
-                <span class="tag">Mistral</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">201 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Halo -->
-        <div class="carte-assistant apparition" data-category="formation" data-platform="gpt">
-          <div class="carte-top-accent bourgogne"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone bourgogne">🎓</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Halo</div>
-                <div class="carte-auteur">par Sophie</div>
-              </div>
-            </div>
-            <p class="carte-description">Création de parcours de formation IA sur mesure. Génère les modules, les quiz et les fiches récapitulatives.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Formation</span>
-                <span class="tag">GPT-4o</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">52 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Lumière -->
-        <div class="carte-assistant apparition" data-category="cadrage" data-platform="claude">
-          <div class="carte-top-accent cerulean"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone cerulean">🧭</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Lumière</div>
-                <div class="carte-auteur">par Anne</div>
-              </div>
-            </div>
-            <p class="carte-description">Cartographie des cas d'usage IA d'une direction. Identifie les quick wins, estime le ROI et propose une feuille de route.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Cadrage</span>
-                <span class="tag">Claude</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">38 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD: Rayon -->
-        <div class="carte-assistant apparition" data-category="redaction" data-platform="gpt">
-          <div class="carte-top-accent menthe"></div>
-          <div class="carte-body">
-            <div class="carte-header">
-              <div class="carte-icone menthe">📋</div>
-              <div class="carte-titre-zone">
-                <div class="carte-nom">Rayon</div>
-                <div class="carte-auteur">par Fabien</div>
-              </div>
-            </div>
-            <p class="carte-description">Génère les comptes-rendus de réunion à partir d'une transcription ou de notes brutes. Identifie les actions et les décisions.</p>
-            <div class="carte-footer">
-              <div class="carte-tags">
-                <span class="tag">Rédaction</span>
-                <span class="tag">GPT-4o</span>
-              </div>
-              <div class="carte-meta">
-                <span class="meta-item">173 runs</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- NEW CARD -->
-        <div class="carte-nouvelle apparition">
-          <div class="carte-nouvelle-icon">+</div>
-          <div class="carte-nouvelle-text">Proposer un assistant</div>
-        </div>
-
+      <div class="grille-assistants" id="grille">
+        <!-- Rendu dynamique via JS -->
       </div>
+
     </div>
 
     <footer>
-      <div class="footer-titre">Fabrique de l'Adoption Numérique</div>
-      <div class="footer-sous-titre">e.SNCF Solutions · Direction Numérique Groupe</div>
+      <div>
+        <div class="footer-titre">Fabrique de l'Adoption Numérique</div>
+        <div class="footer-sous">e.SNCF Solutions · Direction Numérique Groupe</div>
+      </div>
       <div class="footer-filet"></div>
     </footer>
   </main>
 </div>
 
-<script>
-  // Apparition au scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.apparition').forEach(el => observer.observe(el));
+<!-- ======== PANNEAU MICROSOFT FORMS ======== -->
+<div class="panneau-overlay" id="panneauOverlay">
+  <div class="panneau" id="panneau">
+    <div class="panneau-entete">
+      <div>
+        <div class="panneau-titre">Proposer un assistant</div>
+        <div class="panneau-sous">Remplissez le formulaire — votre assistant sera ajouté à la bibliothèque après validation.</div>
+      </div>
+      <button class="btn-fermer" id="btnFermer" title="Fermer">✕</button>
+    </div>
+    <div class="panneau-info">
+      <span>ℹ</span>
+      <span>Les réponses sont synchronisées automatiquement avec la base de données GitHub via Power Automate.</span>
+    </div>
+    <div class="panneau-corps" id="panneauCorps">
+      <!--
+        INTÉGRATION MICROSOFT FORMS :
+        Remplacez le bloc "forms-placeholder" ci-dessous par un iframe pointant
+        vers votre formulaire Microsoft Forms.
 
-  // Filter chips (category)
+        URL d'embed Forms (exemple) :
+        https://forms.office.com/Pages/ResponsePage.aspx?id=VOTRE_ID&embed=true
+
+        Décommentez et adaptez :
+        <iframe
+          src="https://forms.office.com/Pages/ResponsePage.aspx?id=VOTRE_ID&embed=true"
+          title="Proposer un assistant"
+          allow="camera; microphone; geolocation"
+          loading="lazy">
+        </iframe>
+      -->
+      <div class="forms-placeholder">
+        <div class="forms-placeholder-icon">📝</div>
+        <div class="forms-placeholder-titre">Formulaire Microsoft Forms</div>
+        <p class="forms-placeholder-texte">
+          Le formulaire Microsoft Forms sera affiché ici une fois l'URL configurée.<br>
+          Remplacez le commentaire HTML par le code d'intégration de votre formulaire.
+        </p>
+        <div class="forms-placeholder-url">
+          https://forms.office.com/Pages/ResponsePage.aspx?id=<strong>VOTRE_ID</strong>&amp;embed=true
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ────────────────────────────────────────────────
+  //  CONFIGURATION
+  // ────────────────────────────────────────────────
+
+  // Pour une utilisation via GitHub Pages, remplacez par l'URL raw GitHub :
+  // 'https://raw.githubusercontent.com/VOTRE_ORG/VOTRE_REPO/main/data/assistants.json'
+  const DATA_URL = 'data/assistants.json';
+
+  // Couleur de tag par catégorie
+  const COULEUR_CAT = {
+    atelier:   'ambre',
+    cadrage:   'cerulean',
+    redaction: 'menthe',
+    dev:       'lavande',
+    analyse:   'ocre',
+    formation: 'bourgogne',
+  };
+
+  // Couleur de tag par plateforme
+  const COULEUR_PLATEFORME = {
+    gpt:     'primaire',
+    claude:  'lavande',
+    mistral: 'neutre',
+  };
+
+  // ────────────────────────────────────────────────
+  //  ÉTAT
+  // ────────────────────────────────────────────────
+  let assistants = [];
+  let filtreCategorie = 'all';
+  let filtrePlateforme = 'all';
+  let recherche = '';
+  const favoris = new Set(JSON.parse(localStorage.getItem('solstice_favoris') || '[]'));
+
+  // ────────────────────────────────────────────────
+  //  CHARGEMENT DES DONNÉES
+  // ────────────────────────────────────────────────
+  async function chargerDonnees() {
+    try {
+      const res = await fetch(DATA_URL);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      assistants = data.assistants || [];
+
+      // Stats sidebar
+      document.getElementById('statTotal').textContent = assistants.length;
+      document.getElementById('statContributeurs').textContent = data.meta?.contributeurs ?? '—';
+      const date = data.meta?.derniere_mise_a_jour
+        ? new Date(data.meta.derniere_mise_a_jour).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' })
+        : '—';
+      document.getElementById('statDate').textContent = date;
+
+    } catch (e) {
+      console.warn('Impossible de charger data/assistants.json, données de secours utilisées.', e);
+      assistants = DONNEES_SECOURS;
+    }
+    afficher();
+  }
+
+  // ────────────────────────────────────────────────
+  //  AFFICHAGE
+  // ────────────────────────────────────────────────
+  function afficher() {
+    const grille = document.getElementById('grille');
+    grille.innerHTML = '';
+
+    // Filtrage
+    const visibles = assistants.filter(a => {
+      const matchCat  = filtreCategorie === 'all' || a.categorie === filtreCategorie;
+      const matchPlat = filtrePlateforme === 'all' || a.plateforme === filtrePlateforme;
+      const matchRech = recherche === '' ||
+        a.nom.toLowerCase().includes(recherche) ||
+        a.description.toLowerCase().includes(recherche) ||
+        (a.tags || []).some(t => t.toLowerCase().includes(recherche));
+      return matchCat && matchPlat && matchRech;
+    });
+
+    // Nombre affiché
+    const cats = new Set(visibles.map(a => a.categorie));
+    document.getElementById('compteAssistants').textContent =
+      `${visibles.length} assistant${visibles.length > 1 ? 's' : ''} · ${cats.size} catégorie${cats.size > 1 ? 's' : ''}`;
+
+    if (visibles.length === 0) {
+      grille.innerHTML = `
+        <div class="grille-vide apparition visible">
+          <div class="grille-vide-icon">🔍</div>
+          <div class="grille-vide-titre">Aucun assistant trouvé</div>
+          <div class="grille-vide-sous">Essayez d'autres filtres ou termes de recherche.</div>
+        </div>`;
+      return;
+    }
+
+    // Carte vedette en premier
+    const vedette = filtreCategorie === 'all' && filtrePlateforme === 'all' && recherche === ''
+      ? visibles.find(a => a.vedette)
+      : null;
+
+    if (vedette) {
+      grille.appendChild(creerCarteVedette(vedette));
+    }
+
+    // Cartes normales
+    visibles.filter(a => !a.vedette || vedette === null).forEach((a, i) => {
+      const carte = creerCarte(a);
+      carte.style.transitionDelay = `${i * 50}ms`;
+      grille.appendChild(carte);
+    });
+
+    // Déclenchement animations
+    requestAnimationFrame(() => {
+      grille.querySelectorAll('.apparition').forEach(el => {
+        requestAnimationFrame(() => el.classList.add('visible'));
+      });
+    });
+  }
+
+  // ────────────────────────────────────────────────
+  //  CRÉATION D'UNE CARTE NORMALE
+  // ────────────────────────────────────────────────
+  function creerCarte(a) {
+    const div = document.createElement('div');
+    div.className = 'carte-assistant apparition';
+    div.dataset.id = a.id;
+
+    const estFavori = favoris.has(a.id);
+    const couleurPrincipale = a.couleur || COULEUR_CAT[a.categorie] || 'cerulean';
+
+    div.innerHTML = `
+      <div class="carte-ligne-haute">
+        <div class="carte-icone ${couleurPrincipale}">${a.icone || '🤖'}</div>
+        <div class="carte-actions">
+          <button class="btn-etoile ${estFavori ? 'favori' : ''}" data-id="${a.id}" title="${estFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'}">
+            ${estFavori ? '★' : '☆'}
+          </button>
+          <button class="btn-menu-carte" title="Options">⋮</button>
+        </div>
+      </div>
+      <div class="carte-nom">${a.nom}</div>
+      <p class="carte-description">${a.description}</p>
+      <div class="carte-tags">
+        ${(a.tags || []).map((tag, idx) => {
+          const couleurTag = idx === 0 ? COULEUR_CAT[a.categorie] || 'neutre' : COULEUR_PLATEFORME[a.plateforme] || 'neutre';
+          return `<span class="tag ${couleurTag}">${tag}</span>`;
+        }).join('')}
+      </div>`;
+
+    // Étoile
+    div.querySelector('.btn-etoile').addEventListener('click', e => {
+      e.stopPropagation();
+      toggleFavori(a.id, e.currentTarget);
+    });
+
+    // Clic carte → ouvrir l'assistant
+    div.addEventListener('click', e => {
+      if (e.target.closest('.btn-etoile, .btn-menu-carte')) return;
+      if (a.url && a.url !== '#') window.open(a.url, '_blank');
+    });
+
+    return div;
+  }
+
+  // ────────────────────────────────────────────────
+  //  CRÉATION DE LA CARTE VEDETTE
+  // ────────────────────────────────────────────────
+  function creerCarteVedette(a) {
+    const div = document.createElement('div');
+    div.className = 'carte-featured apparition';
+    div.innerHTML = `
+      <div class="featured-content">
+        <div class="featured-eyebrow">Assistant vedette</div>
+        <div class="featured-nom">${a.nom}</div>
+        <p class="featured-description">${a.description}</p>
+        <div class="featured-action">
+          <button class="btn-featured">Ouvrir l'assistant</button>
+        </div>
+      </div>
+      <div class="featured-visual">
+        <div class="featured-illustration">
+          <svg class="sun-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="60" r="28" fill="#eed484" opacity="0.9"/>
+            <circle cx="60" cy="60" r="22" fill="#eed484"/>
+            <g opacity="0.3">
+              <line x1="60" y1="8" x2="60" y2="24" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="60" y1="96" x2="60" y2="112" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="8" y1="60" x2="24" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="96" y1="60" x2="112" y2="60" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="23.2" y1="23.2" x2="34.5" y2="34.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="85.5" y1="85.5" x2="96.8" y2="96.8" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="23.2" y1="96.8" x2="34.5" y2="85.5" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+              <line x1="85.5" y1="34.5" x2="96.8" y2="23.2" stroke="#eed484" stroke-width="2" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <div class="orbit orbit-1"><span class="orbit-dot c1"></span></div>
+          <div class="orbit orbit-2">
+            <span class="orbit-dot c3"></span>
+            <span class="orbit-dot c4"></span>
+          </div>
+        </div>
+      </div>`;
+
+    div.querySelector('.btn-featured').addEventListener('click', e => {
+      e.stopPropagation();
+      if (a.url && a.url !== '#') window.open(a.url, '_blank');
+    });
+    div.addEventListener('click', () => {
+      if (a.url && a.url !== '#') window.open(a.url, '_blank');
+    });
+
+    return div;
+  }
+
+  // ────────────────────────────────────────────────
+  //  FAVORIS
+  // ────────────────────────────────────────────────
+  function toggleFavori(id, btn) {
+    if (favoris.has(id)) {
+      favoris.delete(id);
+      btn.textContent = '☆';
+      btn.classList.remove('favori');
+      btn.title = 'Ajouter aux favoris';
+    } else {
+      favoris.add(id);
+      btn.textContent = '★';
+      btn.classList.add('favori');
+      btn.title = 'Retirer des favoris';
+    }
+    localStorage.setItem('solstice_favoris', JSON.stringify([...favoris]));
+  }
+
+  // ────────────────────────────────────────────────
+  //  FILTRES & RECHERCHE
+  // ────────────────────────────────────────────────
   document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
     chip.addEventListener('click', () => {
       document.querySelectorAll('.filter-chip[data-filter]').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
-      const filter = chip.dataset.filter;
-      document.querySelectorAll('.carte-assistant, .carte-featured').forEach(card => {
-        if (filter === 'all' || card.dataset.category === filter) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      document.querySelector('.carte-nouvelle').style.display = '';
+      filtreCategorie = chip.dataset.filter;
+      afficher();
     });
   });
 
-  // Search
-  document.getElementById('searchInput').addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    document.querySelectorAll('.carte-assistant, .carte-featured').forEach(card => {
-      const text = card.textContent.toLowerCase();
-      card.style.display = text.includes(q) ? '' : 'none';
+  document.querySelectorAll('.filter-chip[data-filter-platform]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip[data-filter-platform]').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      filtrePlateforme = chip.dataset.filterPlatform;
+      afficher();
     });
   });
+
+  document.getElementById('searchInput').addEventListener('input', e => {
+    recherche = e.target.value.toLowerCase().trim();
+    afficher();
+  });
+
+  // ────────────────────────────────────────────────
+  //  PANNEAU FORMS
+  // ────────────────────────────────────────────────
+  const panneauOverlay = document.getElementById('panneauOverlay');
+
+  document.getElementById('btnProposer').addEventListener('click', () => {
+    panneauOverlay.classList.add('ouvert');
+    document.body.style.overflow = 'hidden';
+  });
+
+  document.getElementById('btnFermer').addEventListener('click', fermerPanneau);
+
+  panneauOverlay.addEventListener('click', e => {
+    if (e.target === panneauOverlay) fermerPanneau();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fermerPanneau();
+  });
+
+  function fermerPanneau() {
+    panneauOverlay.classList.remove('ouvert');
+    document.body.style.overflow = '';
+  }
+
+  // ────────────────────────────────────────────────
+  //  DONNÉES DE SECOURS (si JSON inaccessible)
+  // ────────────────────────────────────────────────
+  const DONNEES_SECOURS = [
+    { id:'aurore',   nom:'Aurore',    description:'Cadrage rapide de projet IA en 15 minutes. Pose les bonnes questions, structure la fiche projet et identifie les risques clés.', categorie:'cadrage',   plateforme:'gpt',     icone:'⚡', couleur:'cerulean', auteur:'Fabien', tags:['Cadrage','GPT-4o'],   vedette:false },
+    { id:'eclipse',  nom:'Éclipse',   description:'Rédaction et reformulation de contenus métier : notes de synthèse, mails exécutifs, communications internes.',                    categorie:'redaction', plateforme:'claude',  icone:'✏', couleur:'menthe',   auteur:'Marie',  tags:['Rédaction','Claude'],  vedette:false },
+    { id:'zenith',   nom:'Zénith',    description:'Analyse de données et génération de tableaux de bord. Connectez un CSV et obtenez une synthèse visuelle en 30 secondes.',           categorie:'analyse',   plateforme:'claude',  icone:'📊', couleur:'ocre',     auteur:'Thomas', tags:['Analyse','Claude'],    vedette:false },
+    { id:'equinoxe', nom:'Équinoxe',  description:'Revue de code, refactoring et génération de tests. Spécialisé Python et TypeScript avec les conventions SNCF.',                    categorie:'dev',       plateforme:'mistral', icone:'⟨/⟩', couleur:'lavande',  auteur:'Julien', tags:['Dev & Tech','Mistral'], vedette:false },
+    { id:'halo',     nom:'Halo',      description:'Création de parcours de formation IA sur mesure. Génère les modules, les quiz et les fiches récapitulatives.',                      categorie:'formation', plateforme:'gpt',     icone:'🎓', couleur:'bourgogne', auteur:'Sophie', tags:['Formation','GPT-4o'],  vedette:false },
+    { id:'lumiere',  nom:'Lumière',   description:'Cartographie des cas d\'usage IA d\'une direction. Identifie les quick wins, estime le ROI et propose une feuille de route.',       categorie:'cadrage',   plateforme:'claude',  icone:'🧭', couleur:'cerulean', auteur:'Anne',   tags:['Cadrage','Claude'],    vedette:false },
+    { id:'rayon',    nom:'Rayon',     description:'Génère les comptes-rendus de réunion à partir d\'une transcription ou de notes brutes. Identifie les actions et les décisions.',   categorie:'redaction', plateforme:'gpt',     icone:'📋', couleur:'menthe',   auteur:'Fabien', tags:['Rédaction','GPT-4o'],  vedette:false },
+  ];
+
+  // ────────────────────────────────────────────────
+  //  INIT
+  // ────────────────────────────────────────────────
+  chargerDonnees();
 </script>
 
 </body>
