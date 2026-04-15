@@ -466,6 +466,50 @@
       text-align: left;
     }
 
+    /* ── Filtre métiers sidebar ── */
+    .filtre-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--sur-surface-2);
+      margin-bottom: 0.55rem;
+    }
+    .chips-metiers { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .chip-metier {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--sur-surface-2);
+      background: var(--surface);
+      border: 1.5px solid var(--surface-haute);
+      border-radius: 20px;
+      padding: 0.25rem 0.65rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .chip-metier:hover { border-color: var(--primaire); color: var(--primaire); }
+    .chip-metier.actif {
+      background: var(--primaire);
+      border-color: var(--primaire);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Tags métiers sur les cartes ── */
+    .carte-metiers { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .tag-metier {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: #eef0fb;
+      color: #3447c0;
+      border-radius: 20px;
+      padding: 0.18rem 0.55rem;
+      white-space: nowrap;
+    }
+
     /* ── Apparition ── */
     .app { opacity: 0; transform: translateY(8px); transition: opacity 0.3s ease, transform 0.3s ease; }
     .app.v { opacity: 1; transform: none; }
@@ -506,6 +550,24 @@
       </svg>
       Mes favoris uniquement
     </button>
+
+    <div>
+      <div class="filtre-label">Métier</div>
+      <div class="chips-metiers" id="chipsMetiers">
+        <span class="chip-metier" data-metier="Transverse">Transverse</span>
+        <span class="chip-metier" data-metier="RH">RH</span>
+        <span class="chip-metier" data-metier="Achats">Achats</span>
+        <span class="chip-metier" data-metier="Finance">Finance</span>
+        <span class="chip-metier" data-metier="Marketing & Com">Marketing & Com</span>
+        <span class="chip-metier" data-metier="Ingénierie">Ingénierie</span>
+        <span class="chip-metier" data-metier="Exploitation">Exploitation</span>
+        <span class="chip-metier" data-metier="Commercial">Commercial</span>
+        <span class="chip-metier" data-metier="Juridique">Juridique</span>
+        <span class="chip-metier" data-metier="Sécurité">Sécurité</span>
+        <span class="chip-metier" data-metier="IT & Numérique">IT & Numérique</span>
+        <span class="chip-metier" data-metier="Immobilier & Facilities">Immobilier & Facilities</span>
+      </div>
+    </div>
 
     <div class="sidebar-stats">
       <div class="stat-row">
@@ -603,6 +665,7 @@
   let assistants = [];
   let recherche = '';
   let favorisUniquement = false;
+  let metiersActifs = new Set();
   const favoris = new Set(JSON.parse(localStorage.getItem('solstice_fav') || '[]'));
 
   // ── Lecture CSV ─────────────────────────────────
@@ -677,11 +740,16 @@
 
     const filtres = assistants.filter(a => {
       if (favorisUniquement && !favoris.has(cle(a))) return false;
+      if (metiersActifs.size > 0) {
+        const tags = (a.metiers || '').split('|').map(m => m.trim());
+        if (!tags.some(m => metiersActifs.has(m))) return false;
+      }
       if (!recherche) return true;
       return (
         a.nom.toLowerCase().includes(recherche) ||
         a.description.toLowerCase().includes(recherche) ||
-        (a.contact || '').toLowerCase().includes(recherche)
+        (a.contact || '').toLowerCase().includes(recherche) ||
+        (a.metiers || '').toLowerCase().includes(recherche)
       );
     });
 
@@ -736,6 +804,7 @@
       </div>
       <div class="carte-nom">${a.nom}</div>
       <p class="carte-desc">${a.description}</p>
+      ${tagsMetiers(a)}
       <div class="carte-pied">
         <div class="carte-contact">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -782,6 +851,14 @@
     return carte;
   }
 
+  // ── Tags métiers ────────────────────────────────
+  function tagsMetiers(a) {
+    if (!a.metiers) return '';
+    const tags = a.metiers.split('|').map(m => m.trim()).filter(Boolean);
+    if (tags.length === 0) return '';
+    return `<div class="carte-metiers">${tags.map(m => `<span class="tag-metier">${m}</span>`).join('')}</div>`;
+  }
+
   // ── Filtres ──────────────────────────────────────
   document.getElementById('recherche').addEventListener('input', e => {
     recherche = e.target.value.toLowerCase().trim();
@@ -792,6 +869,21 @@
     favorisUniquement = !favorisUniquement;
     e.currentTarget.classList.toggle('actif', favorisUniquement);
     afficher();
+  });
+
+  // Chips métiers
+  document.querySelectorAll('.chip-metier').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const m = chip.dataset.metier;
+      if (metiersActifs.has(m)) {
+        metiersActifs.delete(m);
+        chip.classList.remove('actif');
+      } else {
+        metiersActifs.add(m);
+        chip.classList.add('actif');
+      }
+      afficher();
+    });
   });
 
   // ── Panneau Forms ────────────────────────────────

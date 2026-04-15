@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [0.4.0] — 2026-04-15
+
+### Ajouté
+- **Tags métiers** sur chaque carte : affichage des familles métier associées à l'assistant (fond indigo clair)
+- **Filtre par métier** dans la sidebar : 12 chips cliquables (Transverse, RH, Achats, Finance, Marketing & Com, Ingénierie, Exploitation, Commercial, Juridique, Sécurité, IT & Numérique, Immobilier & Facilities) — sélection multiple possible, logique OU
+- **Colonne `metiers`** dans `data/assistants.csv` : valeurs séparées par `|` (ex. `Transverse|RH`)
+- La recherche plein texte couvre désormais aussi les tags métiers
+
+---
+
 ## [0.3.0] — 2026-04-15
 
 ### Ajouté

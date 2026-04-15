@@ -28,6 +28,11 @@ Toutes les données sont dans [`data/assistants.csv`](data/assistants.csv). Ouvr
 | `lien` | URL de l'assistant sur Groupe SNCF GPT | `https://chatgpt.com/g/...` |
 | `contact` | Personne référente | `Mathieu Ribourg` |
 | `image` | Nom du fichier image dans `img/` | `sunshine.png` |
+| `metiers` | Familles métier, séparées par `\|` | `Transverse\|RH` |
+
+### Familles métiers disponibles
+
+`Transverse` · `RH` · `Achats` · `Finance` · `Marketing & Com` · `Ingénierie` · `Exploitation` · `Commercial` · `Juridique` · `Sécurité` · `IT & Numérique` · `Immobilier & Facilities`
 
 ### Exemple de ligne CSV
 
